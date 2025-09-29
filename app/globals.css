@@ -1,0 +1,169 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 262 83% 58%;
+    --chart-3: 198 93% 60%;
+    --chart-4: 142 76% 36%;
+    --chart-5: 25 95% 53%;
+    --radius: 0.5rem;
+    --sidebar: 217 32% 17%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 217 28% 22%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 28% 22%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .dark {
+    /* Updated dark theme colors to fix red background issue */
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 224 71% 4%;
+    --secondary: 215 27% 17%;
+    --secondary-foreground: 213 31% 91%;
+    --muted: 215 27% 17%;
+    --muted-foreground: 217 10% 65%;
+    --accent: 215 27% 17%;
+    --accent-foreground: 213 31% 91%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 213 31% 91%;
+    --border: 215 27% 17%;
+    --input: 215 27% 17%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 262 83% 58%;
+    --chart-3: 198 93% 60%;
+    --chart-4: 142 76% 36%;
+    --chart-5: 47 96% 89%;
+    --sidebar: 224 71% 4%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 224 71% 4%;
+    --sidebar-accent: 215 27% 17%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 215 27% 17%;
+    --sidebar-ring: 217 91% 60%;
+
+    /* Added metro-specific color variables for train health status */
+    --metro-blue: 217 91% 60%;
+    --metro-purple: 262 83% 58%;
+    --metro-teal: 198 93% 60%;
+    --metro-green: 142 76% 36%;
+    --metro-orange: 25 95% 53%;
+    --metro-red: 0 84% 60%;
+    --metro-yellow: 47 96% 89%;
+    --success: 142 76% 36%;
+    --warning: 25 95% 53%;
+    --info: 198 93% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    background-color: hsl(var(--background)) !important;
+  }
+}
+
+/* Custom animations */
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-count-up {
+  animation: countUp 0.6s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideInFromBottom 0.5s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Added train health matrix styles */
+.train-health-cell {
+  @apply w-8 h-8 rounded-sm cursor-pointer transition-all duration-200 hover:scale-110 hover:shadow-md;
+}
+
+.train-health-cell.excellent {
+  @apply bg-green-500;
+}
+
+.train-health-cell.good {
+  @apply bg-blue-500;
+}
+
+.train-health-cell.warning {
+  @apply bg-yellow-500;
+}
+
+.train-health-cell.critical {
+  @apply bg-red-500;
+}
+
+.train-health-cell.maintenance {
+  @apply bg-gray-500;
+}
