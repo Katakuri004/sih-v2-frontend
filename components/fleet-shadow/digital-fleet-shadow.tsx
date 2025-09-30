@@ -18,16 +18,20 @@ interface Train3D {
 
 export default function DigitalFleetShadow() {
   const [selectedTrain, setSelectedTrain] = useState<Train3D | null>(null)
-  const [simulationMode, setSimulationMode] = useState(false)
+  const [selectedScenario, setSelectedScenario] = useState("normal")
   const [isVisible, setIsVisible] = useState(false)
+  const [viewMode, setViewMode] = useState<"top" | "isometric">("isometric")
+  const [playingRollout, setPlayingRollout] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 200)
     return () => clearTimeout(timer)
   }, [])
 
-  const handleSimulationToggle = (enabled: boolean) => {
-    setSimulationMode(enabled)
+  const handleScenarioChange = (scenario: string) => {
+    setSelectedScenario(scenario)
+    // Reset train selection when scenario changes
+    setSelectedTrain(null)
     if (!enabled) {
       setSelectedTrain(null)
     }
@@ -42,43 +46,105 @@ export default function DigitalFleetShadow() {
           <p className="text-muted-foreground mt-1">Interactive 3D visualization and simulation platform</p>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <Switch id="simulation-mode" checked={simulationMode} onCheckedChange={handleSimulationToggle} />
-          <Label htmlFor="simulation-mode" className="text-sm font-medium">
-            What-If Simulation Mode
-          </Label>
+        {/* Scenario Selector */}
+        <div className="flex items-center gap-4">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode("top")}
+              className={`px-3 py-1.5 rounded ${
+                viewMode === "top" ? "bg-primary text-primary-foreground" : "bg-card hover:bg-muted"
+              }`}
+            >
+              Top View
+            </button>
+            <button
+              onClick={() => setViewMode("isometric")}
+              className={`px-3 py-1.5 rounded ${
+                viewMode === "isometric" ? "bg-primary text-primary-foreground" : "bg-card hover:bg-muted"
+              }`}
+            >
+              Isometric
+            </button>
+          </div>
+          <select
+            value={selectedScenario}
+            onChange={(e) => handleScenarioChange(e.target.value)}
+            className="bg-card border rounded px-3 py-1.5"
+          >
+            <option value="normal">Normal Operations</option>
+            <option value="maintenance">Trainset 07 Maintenance</option>
+            <option value="cleaning">Cleaning Bay Unavailable</option>
+            <option value="telecom">Telecom Clearance Expiry</option>
+            <option value="peak">Peak Hour Adjustment</option>
+          </select>
         </div>
       </div>
 
-      {/* Instructions */}
-      <div className="bg-muted/50 p-4 rounded-lg">
-        <p className="text-sm text-muted-foreground">
-          {simulationMode
-            ? "Click and drag trains to simulate position changes. Watch real-time updates in energy costs and operational metrics."
-            : "Click on any train to view detailed information. Enable simulation mode to interact with train positions."}
-        </p>
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* 3D Viewer */}
+        <div className="lg:col-span-3 bg-card rounded-lg overflow-hidden">
+          <Viewer3D
+            onTrainSelect={setSelectedTrain}
+            selectedTrain={selectedTrain}
+            scenario={selectedScenario}
+            viewMode={viewMode}
+          />
+        </div>
+
+        {/* Details Panel */}
+        <div className="lg:col-span-1">
+          <TrainDetailsPanel train={selectedTrain} scenario={selectedScenario} />
+        </div>
       </div>
 
-      {/* 3D Viewer */}
-      <div className="relative">
-        <Viewer3D onTrainSelect={setSelectedTrain} selectedTrain={selectedTrain} simulationMode={simulationMode} />
-
-        <TrainDetailsPanel train={selectedTrain} isVisible={!!selectedTrain} simulationMode={simulationMode} />
+      {/* Timeline Controls */}
+      <div className="bg-card p-4 rounded-lg border space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium">Morning Rollout Schedule</h3>
+          <button
+            onClick={() => setPlayingRollout(!playingRollout)}
+            className={`px-4 py-2 rounded ${
+              playingRollout ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"
+            }`}
+          >
+            {playingRollout ? "Stop" : "Play Animation"}
+          </button>
+        </div>
+        
+        {/* Timeline */}
+        <div className="space-y-2">
+          <div className="h-2 bg-muted rounded-full relative">
+            <div
+              className="absolute h-full bg-primary rounded-full transition-all"
+              style={{ width: playingRollout ? "100%" : "0%", transitionDuration: playingRollout ? "30s" : "0s" }}
+            />
+          </div>
+          <div className="flex justify-between text-sm text-muted-foreground">
+            <span>21:00</span>
+            <span>22:00</span>
+            <span>23:00</span>
+          </div>
+        </div>
       </div>
 
       {/* Legend */}
-      <div className="flex gap-6 p-4 bg-card rounded-lg border">
+      <div className="flex flex-wrap gap-6 p-4 bg-card rounded-lg border">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-chart-1 rounded"></div>
-          <span className="text-sm">Active Service</span>
+          <div className="w-4 h-4 bg-primary rounded-full"></div>
+          <span className="text-sm">Service Ready</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-destructive rounded"></div>
-          <span className="text-sm">Maintenance</span>
+          <div className="w-4 h-4 bg-destructive rounded-full"></div>
+          <span className="text-sm">In Maintenance</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-chart-2 rounded"></div>
-          <span className="text-sm">Standby</span>
+          <div className="w-4 h-4 bg-secondary rounded-full"></div>
+          <span className="text-sm">Under Cleaning</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
+          <span className="text-sm">Standby/Caution</span>
         </div>
       </div>
     </div>

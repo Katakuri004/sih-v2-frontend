@@ -1,33 +1,344 @@
-"use client"
+"use client";
+import React, { useState, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import * as THREE from "three";
+import { mockTrains } from "./data";
+import { Train3D } from "./types";
+import { ShuntingPath } from "./shunting-path";
 
-import { Card } from "@/components/ui/card"
-import { useEffect, useRef, useState } from "react"
+interface ShuntingPathData {
+  from: THREE.Vector3;
+  to: THREE.Vector3;
+}
+
+interface Viewer3DProps {
+  onTrainSelect: (train: Train3D) => void;
+  selectedTrain: Train3D | null;
+  viewMode: "normal" | "top";
+  scenario?: "maintenance" | "cleaning" | null;
+}
+
+function getTrainColor(train: Train3D): string {
+  switch (train.status) {
+    case "maintenance":
+      return "#ef4444"; // Red
+    case "cleaning":
+      return "#f59e0b"; // Yellow
+    case "ready":
+      return "#10b981"; // Green
+    case "inactive":
+    default:
+      return "#6b7280"; // Gray
+  }
+}
+
+function Train({ train, isSelected, onClick }: { train: Train3D; isSelected: boolean; onClick: () => void }) {
+  const scale = isSelected ? 1.1 : 1;
+
+  return (
+    <group
+      position={[train.position.x, 0, train.position.z]}
+      onClick={onClick}
+      scale={[scale, scale, scale]}
+    >
+      <mesh castShadow position={[0, 2, 0]}>
+        <boxGeometry args={[12, 4, 24]} />
+        <meshStandardMaterial color={getTrainColor(train)} />
+      </mesh>
+    </group>
+  );
+}
+
+export function Viewer3D({ onTrainSelect, selectedTrain, viewMode, scenario }: Viewer3DProps) {
+  const [shuntingPaths, setShuntingPaths] = useState<ShuntingPathData[]>([]);
+
+  // Update shunting paths based on scenario
+  useEffect(() => {
+    if (scenario === "maintenance") {
+      setShuntingPaths([
+        {
+          from: new THREE.Vector3(mockTrains[1].position.x, 0, mockTrains[1].position.z),
+          to: new THREE.Vector3(mockTrains[1].position.x, 0, mockTrains[1].position.z + 60)
+        }
+      ]);
+    } else if (scenario === "cleaning") {
+      setShuntingPaths([
+        {
+          from: new THREE.Vector3(mockTrains[2].position.x, 0, mockTrains[2].position.z),
+          to: new THREE.Vector3(mockTrains[2].position.x + 40, 0, mockTrains[2].position.z)
+        }
+      ]);
+    } else {
+      setShuntingPaths([]);
+    }
+  }, [scenario]);
+
+  return (
+    <div className="w-full h-full min-h-[600px]">
+      <Canvas shadows camera={{ position: viewMode === "top" ? [0, 100, 0] : [50, 50, 50], fov: 50 }}>
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={0.5} castShadow />
+        
+        {/* Depot floor */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[40, -1.5, 60]} receiveShadow>
+          <planeGeometry args={[120, 180]} />
+          <meshStandardMaterial color="#1f2937" />
+        </mesh>
+
+        {/* Bay markers */}
+        {mockTrains.map((train, index) => (
+          <mesh
+            key={`bay-${index}`}
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[train.position.x, -1.4, train.position.z]}
+          >
+            <planeGeometry args={[15, 28]} />
+            <meshStandardMaterial color="#374151" />
+          </mesh>
+        ))}
+
+        {/* Trains */}
+        {mockTrains.map((train) => (
+          <Train
+            key={train.id}
+            train={train}
+            isSelected={selectedTrain?.id === train.id}
+            onClick={() => onTrainSelect(train)}
+          />
+        ))}
+
+        {/* Shunting Paths */}
+        {shuntingPaths.map((path, index) => (
+          <ShuntingPath key={index} from={path.from} to={path.to} />
+        ))}
+
+        <OrbitControls
+          enableDamping
+          dampingFactor={0.05}
+          minDistance={30}
+          maxDistance={200}
+          maxPolarAngle={viewMode === "top" ? Math.PI / 2.5 : Math.PI / 2}
+        />
+      </Canvas>
+    </div>
+  );
+}
+
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
+import { useEffect, useRef, useState } from 'react'
+import * as THREE from 'three'
 
 interface Train3D {
   id: string
   trainNumber: string
   position: { x: number; y: number; z: number }
-  status: "active" | "maintenance" | "standby"
-  route: string
-  passengers: number
-  speed: number
+  status: "ready" | "maintenance" | "cleaning" | "standby"
+  healthScore: number
+  lastMaintenance: string
+  nextMaintenance: string
+  totalKm: number
+  bay: number
 }
 
-const mockTrains: Train3D[] = [
-  {
-    id: "1",
-    trainNumber: "T-001",
-    position: { x: 100, y: 50, z: 0 },
-    status: "active",
-    route: "Line 1 - Central",
-    passengers: 245,
-    speed: 65,
+interface Viewer3DProps {
+  onTrainSelect: (train: Train3D | null) => void
+  selectedTrain: Train3D | null
+  viewMode: "top" | "isometric"
+  scenario: string
+}
+
+const mockTrains: Train3D[] = Array.from({ length: 25 }, (_, index) => ({
+  id: (index + 1).toString(),
+  trainNumber: `T-${(index + 1).toString().padStart(3, '0')}`,
+  position: {
+    x: (index % 5) * 20,
+    y: 0,
+    z: Math.floor(index / 5) * 30
   },
-  {
-    id: "2",
-    trainNumber: "T-002",
-    position: { x: 300, y: 150, z: 0 },
-    status: "standby",
+  status: index % 4 === 0 ? "ready" :
+         index % 4 === 1 ? "maintenance" :
+         index % 4 === 2 ? "cleaning" : "standby",
+  healthScore: 70 + Math.floor(Math.random() * 30),
+  lastMaintenance: "2023-09-15",
+  nextMaintenance: "2023-10-15",
+  totalKm: 150000 + Math.floor(Math.random() * 20000),
+  bay: index + 1
+}));
+
+function Train({ train, isSelected, onClick }: { train: Train3D; isSelected: boolean; onClick: () => void }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  const getTrainColor = (status: Train3D["status"]) => {
+    switch (status) {
+      case "ready":
+        return "#34a85a"; // Primary color
+      case "maintenance":
+        return "#ef4444"; // Destructive color
+      case "cleaning":
+        return "#4682b4"; // Secondary color
+      case "standby":
+        return "#eab308"; // Yellow color
+      default:
+        return "#71717a"; // Muted color
+    }
+  };
+
+  return (
+    <mesh
+      ref={meshRef}
+      position={[train.position.x, train.position.y, train.position.z]}
+      onClick={onClick}
+      scale={isSelected ? 1.1 : 1}
+    >
+      <boxGeometry args={[10, 3, 25]} /> {/* Train dimensions */}
+      <meshStandardMaterial color={getTrainColor(train.status)} />
+    </mesh>
+  );
+}
+
+function ShuntingPath({ from, to }: { from: THREE.Vector3; to: THREE.Vector3 }) {
+  const points = [from, to];
+  const curve = new THREE.LineCurve3(from, to);
+  
+  return (
+    <line>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={2}
+          array={new Float32Array([from.x, from.y, from.z, to.x, to.y, to.z])}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <lineBasicMaterial color="#34a85a" linewidth={2} />
+    </line>
+  );
+}
+
+export function Viewer3D({ onTrainSelect, selectedTrain, viewMode, scenario }: Viewer3DProps) {
+  const [shuntingPaths, setShuntingPaths] = useState<ShuntingPathData[]>([]);
+
+  // Update shunting paths based on scenario
+  useEffect(() => {
+    if (scenario === "maintenance") {
+      setShuntingPaths([
+        {
+          from: new THREE.Vector3(mockTrains[1].position.x, 0, mockTrains[1].position.z),
+          to: new THREE.Vector3(mockTrains[1].position.x, 0, mockTrains[1].position.z + 60)
+        }
+      ]);
+    } else if (scenario === "cleaning") {
+      setShuntingPaths([
+        {
+          from: new THREE.Vector3(mockTrains[2].position.x, 0, mockTrains[2].position.z),
+          to: new THREE.Vector3(mockTrains[2].position.x + 40, 0, mockTrains[2].position.z)
+        }
+      ]);
+    } else {
+      setShuntingPaths([]);
+    }
+  }, [scenario]);
+  const [shuntingPaths, setShuntingPaths] = useState<ShuntingPathData[]>([]);
+
+  // Update shunting paths based on scenario
+  useEffect(() => {
+    if (scenario === "maintenance") {
+      setShuntingPaths([
+        {
+          from: new THREE.Vector3(mockTrains[1].position.x, 0, mockTrains[1].position.z),
+          to: new THREE.Vector3(mockTrains[1].position.x, 0, mockTrains[1].position.z + 60)
+        }
+      ]);
+    } else if (scenario === "cleaning") {
+      setShuntingPaths([
+        {
+          from: new THREE.Vector3(mockTrains[2].position.x, 0, mockTrains[2].position.z),
+          to: new THREE.Vector3(mockTrains[2].position.x + 40, 0, mockTrains[2].position.z)
+        }
+      ]);
+    } else {
+      setShuntingPaths([]);
+    }
+  }, [scenario]);
+  const [shuntingPaths, setShuntingPaths] = useState<{ from: THREE.Vector3; to: THREE.Vector3 }[]>([]);
+  // Effect to update shunting paths based on scenario
+  useEffect(() => {
+    if (scenario === 'maintenance') {
+      setShuntingPaths([
+        {
+          from: new THREE.Vector3(mockTrains[6].position.x, 0, mockTrains[6].position.z),
+          to: new THREE.Vector3(mockTrains[6].position.x, 0, mockTrains[6].position.z + 60)
+        }
+      ]);
+    } else if (scenario === 'cleaning') {
+      setShuntingPaths([
+        {
+          from: new THREE.Vector3(mockTrains[2].position.x, 0, mockTrains[2].position.z),
+          to: new THREE.Vector3(mockTrains[2].position.x + 40, 0, mockTrains[2].position.z)
+        }
+      ]);
+    } else {
+      setShuntingPaths([]);
+    }
+  }, [scenario]);
+
+  return (
+    <div className="w-full h-full min-h-[600px]">
+      <Canvas shadows camera={{ position: viewMode === "top" ? [0, 100, 0] : [50, 50, 50], fov: 50 }}>
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={0.5} castShadow />
+        
+        {/* Depot floor */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[40, -1.5, 60]} receiveShadow>
+          <planeGeometry args={[120, 180]} />
+          <meshStandardMaterial color="#1f2937" />
+        </mesh>
+
+        {/* Bay markers */}
+        {mockTrains.map((train, index) => (
+          <mesh
+            key={`bay-${index}`}
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[train.position.x, -1.4, train.position.z]}
+          >
+            <planeGeometry args={[15, 28]} />
+            <meshStandardMaterial color="#374151" />
+          </mesh>
+        ))}
+
+        {/* Trains */}
+        {mockTrains.map((train) => (
+          <Train
+            key={train.id}
+            train={train}
+            isSelected={selectedTrain?.id === train.id}
+            onClick={() => onTrainSelect(train)}
+          />
+        ))}
+
+        {/* Shunting Paths */}
+        {shuntingPaths.map((path, index) => (
+          <ShuntingPath key={index} from={path.from} to={path.to} />
+        ))}
+
+        {/* Shunting Paths */}
+        {shuntingPaths.map((path, index) => (
+          <ShuntingPath key={index} from={path.from} to={path.to} />
+        ))}
+
+        <OrbitControls
+          enableDamping
+          dampingFactor={0.05}
+          minDistance={30}
+          maxDistance={200}
+          maxPolarAngle={viewMode === "top" ? Math.PI / 2.5 : Math.PI / 2}
+        />
+      </Canvas>
+    </div>
+  );
+}
     route: "Line 2 - North",
     passengers: 0,
     speed: 0,

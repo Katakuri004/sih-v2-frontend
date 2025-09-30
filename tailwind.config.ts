@@ -23,9 +23,9 @@ const config = {
         sans: ["Plus Jakarta Sans", "sans-serif"],
       },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
+        border: "rgb(var(--border))",
+        input: "rgb(var(--input))",
+        ring: "rgb(var(--ring))",
         background: "rgb(var(--background))",
         foreground: "rgb(var(--foreground))",
         primary: {

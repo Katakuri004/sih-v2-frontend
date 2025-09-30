@@ -5,75 +5,94 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
-    --chart-2: 262 83% 58%;
-    --chart-3: 198 93% 60%;
-    --chart-4: 142 76% 36%;
-    --chart-5: 25 95% 53%;
+    --background: 17 18 21;
+    --foreground: 231 235 239;
+    --card: 26 27 30;
+    --card-foreground: 231 235 239;
+    --popover: 26 27 30;
+    --popover-foreground: 231 235 239;
+    --primary: 52 168 90;
+    --primary-foreground: 231 235 239;
+    --secondary: 70 130 180;
+    --secondary-foreground: 231 235 239;
+    --muted: 39 41 45;
+    --muted-foreground: 157 164 174;
+    --accent: 52 168 90;
+    --accent-foreground: 231 235 239;
+    --destructive: 239 68 68;
+    --destructive-foreground: 231 235 239;
+    --border: 39 41 45;
+    --input: 39 41 45;
+    --ring: 52 168 90;
+    --chart-1: 52 168 90;
+    --chart-2: 70 130 180;
+    --chart-3: 90 155 213;
+    --chart-4: 127 181 224;
+    --chart-5: 52 168 90;
     --radius: 0.5rem;
-    --sidebar: 217 32% 17%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 217 28% 22%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 28% 22%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar: rgb(26, 27, 30);
+    --sidebar-foreground: rgb(231, 235, 239);
+    --sidebar-primary: rgb(52, 168, 90);
+    --sidebar-primary-foreground: rgb(231, 235, 239);
+    --sidebar-accent: rgb(70, 130, 180);
+    --sidebar-accent-foreground: rgb(231, 235, 239);
+    --sidebar-border: rgb(39, 41, 45);
+    --sidebar-ring: rgb(52, 168, 90);
+    --font-sans: Plus Jakarta Sans, sans-serif;
+    --font-serif: Source Serif 4, serif;
+    --font-mono: JetBrains Mono, monospace;
+    --shadow-color: oklch(0 0 0);
+    --shadow-opacity: 0.1;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-offset-x: 0;
+    --shadow-offset-y: 1px;
+    --letter-spacing: 0em;
+    --spacing: 0.25rem;
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --tracking-normal: 0em;
   }
 
   .dark {
-    /* Updated dark theme colors to fix red background issue */
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
-    --popover: 224 71% 4%;
-    --popover-foreground: 213 31% 91%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 224 71% 4%;
-    --secondary: 215 27% 17%;
-    --secondary-foreground: 213 31% 91%;
-    --muted: 215 27% 17%;
-    --muted-foreground: 217 10% 65%;
-    --accent: 215 27% 17%;
-    --accent-foreground: 213 31% 91%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 213 31% 91%;
-    --border: 215 27% 17%;
-    --input: 215 27% 17%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
-    --chart-2: 262 83% 58%;
-    --chart-3: 198 93% 60%;
-    --chart-4: 142 76% 36%;
-    --chart-5: 47 96% 89%;
-    --sidebar: 224 71% 4%;
-    --sidebar-foreground: 213 31% 91%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 224 71% 4%;
-    --sidebar-accent: 215 27% 17%;
-    --sidebar-accent-foreground: 213 31% 91%;
-    --sidebar-border: 215 27% 17%;
-    --sidebar-ring: 217 91% 60%;
+    --background: rgb(17, 18, 21);
+    --foreground: rgb(231, 235, 239);
+    --card: rgb(26, 27, 30);
+    --card-foreground: rgb(231, 235, 239);
+    --popover: rgb(26, 27, 30);
+    --popover-foreground: rgb(231, 235, 239);
+    --primary: rgb(52, 168, 90);
+    --primary-foreground: rgb(231, 235, 239);
+    --secondary: rgb(70, 130, 180);
+    --secondary-foreground: rgb(231, 235, 239);
+    --muted: rgb(39, 41, 45);
+    --muted-foreground: rgb(157, 164, 174);
+    --accent: rgb(52, 168, 90);
+    --accent-foreground: rgb(231, 235, 239);
+    --destructive: rgb(239, 68, 68);
+    --destructive-foreground: rgb(231, 235, 239);
+    --border: rgb(39, 41, 45);
+    --input: rgb(39, 41, 45);
+    --ring: oklch(0.6487 0.1538 150.3071);
+    --chart-1: oklch(0.6487 0.1538 150.3071);
+    --chart-2: oklch(0.5880 0.0993 245.7394);
+    --chart-3: oklch(0.6746 0.1414 261.3380);
+    --chart-4: oklch(0.8269 0.1080 211.9627);
+    --chart-5: oklch(0.5905 0.1608 148.2409);
+    --sidebar: oklch(0.2303 0.0125 264.2926);
+    --sidebar-foreground: oklch(0.9219 0 0);
+    --sidebar-primary: oklch(0.6487 0.1538 150.3071);
+    --sidebar-primary-foreground: oklch(1.0000 0 0);
+    --sidebar-accent: oklch(0.6746 0.1414 261.3380);
+    --sidebar-accent-foreground: oklch(0.9219 0 0);
+    --sidebar-border: oklch(0.3867 0 0);
+    --sidebar-ring: oklch(0.6487 0.1538 150.3071);
 
     /* Added metro-specific color variables for train health status */
     --metro-blue: 217 91% 60%;
@@ -86,16 +105,51 @@
     --success: 142 76% 36%;
     --warning: 25 95% 53%;
     --info: 198 93% 60%;
+    --radius: 0.5rem;
+    --font-sans: Plus Jakarta Sans, sans-serif;
+    --font-serif: Source Serif 4, serif;
+    --font-mono: JetBrains Mono, monospace;
+    --shadow-color: oklch(0 0 0);
+    --shadow-opacity: 0.1;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-offset-x: 0;
+    --shadow-offset-y: 1px;
+    --letter-spacing: 0em;
+    --spacing: 0.25rem;
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+  }
+  .theme {
+    --font-sans: Plus Jakarta Sans, sans-serif;
+    --font-mono: JetBrains Mono, monospace;
+    --font-serif: Source Serif 4, serif;
+    --radius: 0.5rem;
+    --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
+    --tracking-tight: calc(var(--tracking-normal) - 0.025em);
+    --tracking-wide: calc(var(--tracking-normal) + 0.025em);
+    --tracking-wider: calc(var(--tracking-normal) + 0.05em);
+    --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+  }
+  body {
+    letter-spacing: var(--tracking-normal);
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--border);
   }
   body {
-    @apply bg-background text-foreground font-sans;
-    background-color: hsl(var(--background)) !important;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
   }
 }
 
@@ -145,25 +199,34 @@
 
 /* Added train health matrix styles */
 .train-health-cell {
-  @apply w-8 h-8 rounded-sm cursor-pointer transition-all duration-200 hover:scale-110 hover:shadow-md;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.125rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.train-health-cell:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
 .train-health-cell.excellent {
-  @apply bg-green-500;
+  background-color: var(--primary);
 }
 
 .train-health-cell.good {
-  @apply bg-blue-500;
+  background-color: var(--secondary);
 }
 
 .train-health-cell.warning {
-  @apply bg-yellow-500;
+  background-color: rgb(234, 179, 8);
 }
 
 .train-health-cell.critical {
-  @apply bg-red-500;
+  background-color: var(--destructive);
 }
 
 .train-health-cell.maintenance {
-  @apply bg-gray-500;
+  background-color: var(--muted);
 }
