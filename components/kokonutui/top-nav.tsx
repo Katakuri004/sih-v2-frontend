@@ -1,11 +1,15 @@
-"use client"
+"use client";
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Bell, Search, User } from "lucide-react"
-import Profile01 from "./profile-01"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Bell, Search, User } from "lucide-react";
+import Profile01 from "./profile-01";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function TopNav() {
   return (
@@ -23,7 +27,10 @@ export default function TopNav() {
       <div className="flex items-center gap-4">
         <ThemeToggle />
 
-        <button type="button" className="p-2 hover:bg-muted rounded-full transition-colors relative">
+        <button
+          type="button"
+          className="p-2 hover:bg-muted rounded-full transition-colors relative"
+        >
           <Bell className="h-5 w-5 text-muted-foreground" />
           <span className="absolute -top-1 -right-1 h-3 w-3 bg-destructive rounded-full"></span>
         </button>
@@ -37,11 +44,15 @@ export default function TopNav() {
               </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" sideOffset={8} className="w-80 bg-card border-border rounded-lg shadow-lg">
+          <DropdownMenuContent
+            align="end"
+            sideOffset={8}
+            className="w-80 bg-card border-border rounded-lg shadow-lg backdrop-blur-none"
+          >
             <Profile01 avatar="https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png" />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
     </nav>
-  )
+  );
 }

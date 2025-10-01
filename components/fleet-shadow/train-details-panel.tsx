@@ -1,68 +1,66 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { useEffect, useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { useEffect, useState } from "react";
 
 interface Train3D {
-  id: string
-  trainNumber: string
-  position: { x: number; y: number; z: number }
-  status: "ready" | "maintenance" | "cleaning" | "standby"
-  healthScore: number
-  lastMaintenance: string
-  nextMaintenance: string
-  totalKm: number
-  bay: number
+  id: string;
+  trainNumber: string;
+  position: { x: number; y: number; z: number };
+  status: "ready" | "maintenance" | "cleaning" | "standby";
+  healthScore: number;
+  lastMaintenance: string;
+  nextMaintenance: string;
+  totalKm: number;
+  bay: number;
 }
 
 interface TrainDetailsPanelProps {
-  train: Train3D | null
-  scenario: string
+  train: Train3D | null;
+  scenario?: string;
 }
 
 const getStatusInfo = (status: Train3D["status"]) => {
   switch (status) {
     case "ready":
-      return { label: "Service Ready", color: "bg-primary text-primary-foreground" }
+      return {
+        label: "Service Ready",
+        color: "bg-primary text-primary-foreground",
+      };
     case "maintenance":
-      return { label: "In Maintenance", color: "bg-destructive text-destructive-foreground" }
+      return {
+        label: "In Maintenance",
+        color: "bg-destructive text-destructive-foreground",
+      };
     case "cleaning":
-      return { label: "Under Cleaning", color: "bg-secondary text-secondary-foreground" }
+      return {
+        label: "Under Cleaning",
+        color: "bg-secondary text-secondary-foreground",
+      };
     case "standby":
-      return { label: "Standby", color: "bg-yellow-500 text-white" }
+      return { label: "Standby", color: "bg-yellow-500 text-white" };
     default:
-      return { label: "Unknown", color: "bg-muted text-muted-foreground" }
+      return { label: "Unknown", color: "bg-muted text-muted-foreground" };
   }
-}
-  trainNumber: string
-  position: { x: number; y: number; z: number }
-  status: "active" | "maintenance" | "standby"
-  route: string
-  passengers: number
-  speed: number
-}
-
-interface TrainDetailsPanelProps {
-  train: Train3D | null
-  isVisible: boolean
-  simulationMode: boolean
-}
+};
 
 export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
-  const [activeTab, setActiveTab] = useState<"info" | "maintenance" | "simulation">("info")
+  const [activeTab, setActiveTab] = useState<
+    "info" | "maintenance" | "simulation"
+  >("info");
 
   if (!train) {
     return (
       <Card className="h-full flex items-center justify-center p-6 text-muted-foreground">
         <p>Select a train to view details</p>
       </Card>
-    )
+    );
   }
 
-  const statusInfo = getStatusInfo(train.status)
+  const statusInfo = getStatusInfo(train.status);
 
   return (
     <Card className="h-full flex flex-col">
@@ -110,12 +108,16 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
             {/* Key Stats */}
             <div className="grid grid-cols-2 gap-4">
               <Card className="p-4">
-                <div className="text-2xl font-bold">{(train.totalKm / 1000).toFixed(1)}k</div>
+                <div className="text-2xl font-bold">
+                  {(train.totalKm / 1000).toFixed(1)}k
+                </div>
                 <div className="text-sm text-muted-foreground">Total KM</div>
               </Card>
               <Card className="p-4">
                 <div className="text-2xl font-bold">98.5%</div>
-                <div className="text-sm text-muted-foreground">Availability</div>
+                <div className="text-sm text-muted-foreground">
+                  Availability
+                </div>
               </Card>
             </div>
 
@@ -148,11 +150,15 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
             <div className="space-y-4">
               <div className="flex justify-between py-2 border-b">
                 <span>Last Service</span>
-                <span className="text-muted-foreground">{train.lastMaintenance}</span>
+                <span className="text-muted-foreground">
+                  {train.lastMaintenance}
+                </span>
               </div>
               <div className="flex justify-between py-2 border-b">
                 <span>Next Service</span>
-                <span className="text-muted-foreground">{train.nextMaintenance}</span>
+                <span className="text-muted-foreground">
+                  {train.nextMaintenance}
+                </span>
               </div>
               <div className="flex justify-between py-2 border-b">
                 <span>Service Interval</span>
@@ -175,7 +181,9 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
         {activeTab === "simulation" && (
           <div className="space-y-6">
             <Card className="p-4 bg-destructive/10 border-destructive/20">
-              <h4 className="font-medium text-destructive mb-2">Impact Analysis</h4>
+              <h4 className="font-medium text-destructive mb-2">
+                Impact Analysis
+              </h4>
               <p className="text-sm text-muted-foreground">
                 Simulating maintenance delay would affect 3 peak hour services.
               </p>
@@ -186,11 +194,15 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
               <div className="space-y-2">
                 <Card className="p-3 cursor-pointer hover:bg-muted/50">
                   <div className="font-medium">Reschedule to Night Shift</div>
-                  <p className="text-sm text-muted-foreground">No service impact</p>
+                  <p className="text-sm text-muted-foreground">
+                    No service impact
+                  </p>
                 </Card>
                 <Card className="p-3 cursor-pointer hover:bg-muted/50">
                   <div className="font-medium">Use Backup Train</div>
-                  <p className="text-sm text-muted-foreground">15 min preparation needed</p>
+                  <p className="text-sm text-muted-foreground">
+                    15 min preparation needed
+                  </p>
                 </Card>
               </div>
             </div>
@@ -198,104 +210,5 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
         )}
       </div>
     </Card>
-  )
-        {labels[status]}
-      </Badge>
-    )
-  }
-
-  const getCapacityColor = (passengers: number) => {
-    const percentage = (passengers / 300) * 100
-    if (percentage > 80) return "text-destructive"
-    if (percentage > 60) return "text-secondary"
-    return "text-chart-1"
-  }
-
-  return (
-    <div
-      className={`fixed top-20 right-6 w-80 z-50 transition-all duration-500 ease-out ${
-        isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
-      }`}
-    >
-      <Card className="shadow-lg border-2">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">{train.trainNumber}</CardTitle>
-            {getStatusBadge(train.status)}
-          </div>
-          <p className="text-sm text-muted-foreground">{train.route}</p>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <p className="text-sm font-medium">Speed</p>
-              <p
-                className={`text-2xl font-bold transition-all duration-300 ${
-                  simulationMode ? "text-accent" : "text-foreground"
-                }`}
-              >
-                {animatedValues.speed} km/h
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-sm font-medium">Passengers</p>
-              <p
-                className={`text-2xl font-bold transition-all duration-300 ${getCapacityColor(
-                  animatedValues.passengers,
-                )}`}
-              >
-                {animatedValues.passengers}
-              </p>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="space-y-3">
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span>Capacity</span>
-                <span>{Math.round((animatedValues.passengers / 300) * 100)}%</span>
-              </div>
-              <Progress value={(animatedValues.passengers / 300) * 100} className="h-2" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="text-muted-foreground">Position</p>
-                <p className="font-medium">
-                  {Math.round(train.position.x)}, {Math.round(train.position.y)}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-muted-foreground">Energy Cost</p>
-                <p
-                  className={`font-medium transition-all duration-300 ${
-                    simulationMode ? "text-accent" : "text-foreground"
-                  }`}
-                >
-                  ${animatedValues.energyCost}/hr
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {simulationMode && (
-            <>
-              <Separator />
-              <div className="bg-accent/10 p-3 rounded-lg">
-                <p className="text-sm font-medium text-accent mb-1">Simulation Active</p>
-                <p className="text-xs text-muted-foreground">
-                  Drag the train to simulate position changes and see real-time impact on energy costs.
-                </p>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  )
+  );
 }

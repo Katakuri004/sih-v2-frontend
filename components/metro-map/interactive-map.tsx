@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useState, useRef } from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import { useState, useRef } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Station {
-  id: string
-  name: string
-  x: number
-  y: number
-  line: "blue" | "green"
-  crowdLevel: "low" | "medium" | "high"
-  nextTrain: string
-  trainStatus: "on-time" | "delayed" | "approaching"
+  id: string;
+  name: string;
+  x: number;
+  y: number;
+  line: "blue" | "green";
+  crowdLevel: "low" | "medium" | "high";
+  nextTrain: string;
+  trainStatus: "on-time" | "delayed" | "approaching";
 }
 
 const kochiMetroStations: Station[] = [
@@ -238,51 +238,51 @@ const kochiMetroStations: Station[] = [
     nextTrain: "G205",
     trainStatus: "on-time",
   },
-]
+];
 
 interface InteractiveMapProps {
-  onStationClick: (station: Station) => void
+  onStationClick: (station: Station) => void;
 }
 
 export function InteractiveMap({ onStationClick }: InteractiveMapProps) {
-  const [hoveredStation, setHoveredStation] = useState<string | null>(null)
-  const svgRef = useRef<SVGSVGElement>(null)
+  const [hoveredStation, setHoveredStation] = useState<string | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   const getStationColor = (station: Station) => {
-    if (station.line === "blue") return "hsl(var(--metro-blue))"
-    return "hsl(var(--metro-green))"
-  }
+    if (station.line === "blue") return "hsl(var(--metro-blue))";
+    return "hsl(var(--metro-green))";
+  };
 
   const getCrowdColor = (crowdLevel: string) => {
     switch (crowdLevel) {
       case "low":
-        return "hsl(var(--success))"
+        return "hsl(var(--success))";
       case "medium":
-        return "hsl(var(--warning))"
+        return "hsl(var(--warning))";
       case "high":
-        return "hsl(var(--metro-red))"
+        return "hsl(var(--metro-red))";
       default:
-        return "hsl(var(--muted))"
+        return "hsl(var(--muted))";
     }
-  }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "on-time":
-        return "hsl(var(--success))"
+        return "hsl(var(--success))";
       case "delayed":
-        return "hsl(var(--metro-red))"
+        return "hsl(var(--metro-red))";
       case "approaching":
-        return "hsl(var(--metro-teal))"
+        return "hsl(var(--metro-teal))";
       default:
-        return "hsl(var(--muted))"
+        return "hsl(var(--muted))";
     }
-  }
+  };
 
   return (
     <Card className="w-full h-full">
       <CardContent className="p-6">
-        <div className="relative w-full h-[600px] bg-card rounded-lg border overflow-hidden">
+        <div className="relative w-full h-[600px] bg-gradient-to-br from-amber-50/30 to-yellow-50/50 dark:from-gray-800/80 dark:to-gray-700/60 rounded-lg border overflow-hidden">
           <svg
             ref={svgRef}
             viewBox="0 0 900 900"
@@ -290,10 +290,26 @@ export function InteractiveMap({ onStationClick }: InteractiveMapProps) {
             style={{ background: "hsl(var(--background))" }}
           >
             {/* Blue Line Track */}
-            <line x1="400" y1="50" x2="400" y2="850" stroke="hsl(var(--metro-blue))" strokeWidth="6" opacity="0.3" />
+            <line
+              x1="400"
+              y1="50"
+              x2="400"
+              y2="850"
+              stroke="hsl(var(--metro-blue))"
+              strokeWidth="6"
+              opacity="0.3"
+            />
 
             {/* Green Line Track */}
-            <line x1="200" y1="550" x2="700" y2="550" stroke="hsl(var(--metro-green))" strokeWidth="6" opacity="0.3" />
+            <line
+              x1="200"
+              y1="550"
+              x2="700"
+              y2="550"
+              stroke="hsl(var(--metro-green))"
+              strokeWidth="6"
+              opacity="0.3"
+            />
 
             {/* Stations */}
             {kochiMetroStations.map((station) => (
@@ -338,7 +354,9 @@ export function InteractiveMap({ onStationClick }: InteractiveMapProps) {
                   y={station.y + 25}
                   textAnchor="middle"
                   className="text-xs font-medium fill-foreground pointer-events-none"
-                  style={{ fontSize: hoveredStation === station.id ? "12px" : "10px" }}
+                  style={{
+                    fontSize: hoveredStation === station.id ? "12px" : "10px",
+                  }}
                 >
                   {station.name}
                 </text>
@@ -384,58 +402,177 @@ export function InteractiveMap({ onStationClick }: InteractiveMapProps) {
                 x="0"
                 y="0"
                 width="200"
-                height="120"
-                fill="hsl(var(--card))"
-                stroke="hsl(var(--border))"
+                height="210"
+                fill="white"
+                stroke="#e5e7eb"
                 strokeWidth="1"
-                rx="8"
+                rx="12"
                 className="drop-shadow-lg"
               />
-              <text x="10" y="20" className="text-sm font-semibold fill-card-foreground">
+              <text
+                x="15"
+                y="20"
+                className="text-sm font-bold fill-gray-800"
+                style={{ fontSize: "14px", fontWeight: "bold" }}
+              >
                 Legend
               </text>
 
               {/* Line Colors */}
-              <circle cx="20" cy="35" r="4" fill="hsl(var(--metro-blue))" />
-              <text x="30" y="40" className="text-xs fill-card-foreground">
+              <text
+                x="15"
+                y="40"
+                className="text-xs font-medium fill-gray-600"
+                style={{ fontSize: "11px" }}
+              >
+                Lines:
+              </text>
+              <circle
+                cx="25"
+                cy="52"
+                r="4"
+                fill="#3b82f6"
+                stroke="white"
+                strokeWidth="1"
+              />
+              <text
+                x="35"
+                y="57"
+                className="text-xs fill-gray-800"
+                style={{ fontSize: "11px" }}
+              >
                 Blue Line
               </text>
-              <circle cx="20" cy="50" r="4" fill="hsl(var(--metro-green))" />
-              <text x="30" y="55" className="text-xs fill-card-foreground">
+              <circle
+                cx="25"
+                cy="67"
+                r="4"
+                fill="#10b981"
+                stroke="white"
+                strokeWidth="1"
+              />
+              <text
+                x="35"
+                y="72"
+                className="text-xs fill-gray-800"
+                style={{ fontSize: "11px" }}
+              >
                 Green Line
               </text>
 
               {/* Crowd Levels */}
-              <text x="10" y="75" className="text-xs font-medium fill-card-foreground">
+              <text
+                x="15"
+                y="90"
+                className="text-xs font-medium fill-gray-600"
+                style={{ fontSize: "11px" }}
+              >
                 Crowd Level:
               </text>
-              <circle cx="20" cy="85" r="3" fill="hsl(var(--success))" />
-              <text x="30" y="90" className="text-xs fill-card-foreground">
+              <circle
+                cx="25"
+                cy="102"
+                r="3"
+                fill="#10b981"
+                stroke="white"
+                strokeWidth="1"
+              />
+              <text
+                x="35"
+                y="107"
+                className="text-xs fill-gray-800"
+                style={{ fontSize: "11px" }}
+              >
                 Low
               </text>
-              <circle cx="60" cy="85" r="3" fill="hsl(var(--warning))" />
-              <text x="70" y="90" className="text-xs fill-card-foreground">
+              <circle
+                cx="25"
+                cy="117"
+                r="3"
+                fill="#f59e0b"
+                stroke="white"
+                strokeWidth="1"
+              />
+              <text
+                x="35"
+                y="122"
+                className="text-xs fill-gray-800"
+                style={{ fontSize: "11px" }}
+              >
                 Medium
               </text>
-              <circle cx="110" cy="85" r="3" fill="hsl(var(--metro-red))" />
-              <text x="120" y="90" className="text-xs fill-card-foreground">
+              <circle
+                cx="25"
+                cy="132"
+                r="3"
+                fill="#ef4444"
+                stroke="white"
+                strokeWidth="1"
+              />
+              <text
+                x="35"
+                y="137"
+                className="text-xs fill-gray-800"
+                style={{ fontSize: "11px" }}
+              >
                 High
               </text>
 
               {/* Train Status */}
-              <text x="10" y="105" className="text-xs font-medium fill-card-foreground">
+              <text
+                x="15"
+                y="155"
+                className="text-xs font-medium fill-gray-600"
+                style={{ fontSize: "11px" }}
+              >
                 Train Status:
               </text>
-              <circle cx="20" cy="115" r="3" fill="hsl(var(--success))" />
-              <text x="30" y="120" className="text-xs fill-card-foreground">
+              <circle
+                cx="25"
+                cy="167"
+                r="3"
+                fill="#10b981"
+                stroke="white"
+                strokeWidth="1"
+              />
+              <text
+                x="35"
+                y="172"
+                className="text-xs fill-gray-800"
+                style={{ fontSize: "11px" }}
+              >
                 On Time
               </text>
-              <circle cx="80" cy="115" r="3" fill="hsl(var(--metro-teal))" />
-              <text x="90" y="120" className="text-xs fill-card-foreground">
+              <circle
+                cx="25"
+                cy="182"
+                r="3"
+                fill="#06b6d4"
+                stroke="white"
+                strokeWidth="1"
+              />
+              <text
+                x="35"
+                y="187"
+                className="text-xs fill-gray-800"
+                style={{ fontSize: "11px" }}
+              >
                 Approaching
               </text>
-              <circle cx="150" cy="115" r="3" fill="hsl(var(--metro-red))" />
-              <text x="160" y="120" className="text-xs fill-card-foreground">
+              <circle
+                cx="25"
+                cy="197"
+                r="3"
+                fill="#ef4444"
+                stroke="white"
+                strokeWidth="1"
+              />
+              <text
+                x="35"
+                y="202"
+                className="text-xs fill-gray-800"
+                style={{ fontSize: "11px" }}
+              >
                 Delayed
               </text>
             </g>
@@ -443,8 +580,8 @@ export function InteractiveMap({ onStationClick }: InteractiveMapProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
-export { kochiMetroStations }
-export type { Station }
+export { kochiMetroStations };
+export type { Station };

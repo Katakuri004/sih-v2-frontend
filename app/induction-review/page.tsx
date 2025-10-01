@@ -1,13 +1,29 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Textarea } from "@/components/ui/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { CheckCircle, XCircle, Clock, AlertTriangle, FileText, User, TrendingUp, Calendar, Train } from "lucide-react"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertTriangle,
+  FileText,
+  User,
+  TrendingUp,
+  Calendar,
+  Train,
+} from "lucide-react";
 import {
   LineChart,
   Line,
@@ -21,26 +37,26 @@ import {
   PieChart,
   Pie,
   Cell,
-} from "recharts"
+} from "recharts";
 
 interface InductionPlan {
-  id: string
-  trainNumber: string
-  date: string
-  time: string
-  recommendation: "Service" | "Standby" | "Maintenance"
-  fitnessScore: number
-  aiReasoning: string
+  id: string;
+  trainNumber: string;
+  date: string;
+  time: string;
+  recommendation: "Service" | "Standby" | "Maintenance";
+  fitnessScore: number;
+  aiReasoning: string;
   constraints: {
-    fitnessValid: boolean
-    jobCardsClosed: boolean
-    brandingCompliant: boolean
-    mileageBalanced: boolean
-    cleaningScheduled: boolean
-    stablingOptimal: boolean
-  }
-  riskFactors: string[]
-  status: "pending" | "approved" | "rejected"
+    fitnessValid: boolean;
+    jobCardsClosed: boolean;
+    brandingCompliant: boolean;
+    mileageBalanced: boolean;
+    cleaningScheduled: boolean;
+    stablingOptimal: boolean;
+  };
+  riskFactors: string[];
+  status: "pending" | "approved" | "rejected";
 }
 
 const mockInductionPlans: InductionPlan[] = [
@@ -104,7 +120,7 @@ const mockInductionPlans: InductionPlan[] = [
     riskFactors: ["Branding SLA breach risk"],
     status: "pending",
   },
-]
+];
 
 const nightlyOverview = {
   date: "2024-01-25",
@@ -129,7 +145,7 @@ const nightlyOverview = {
     "Extend service frequency on Blue Line evening peak",
     "Monitor T-012 brake system - approaching maintenance threshold",
   ],
-}
+};
 
 const demandPredictionData = [
   { time: "05:00", predicted: 800, actual: 750, confidence: 95 },
@@ -139,7 +155,7 @@ const demandPredictionData = [
   { time: "09:00", predicted: 12500, actual: null, confidence: 87 },
   { time: "10:00", predicted: 6800, actual: null, confidence: 91 },
   { time: "11:00", predicted: 4200, actual: null, confidence: 89 },
-]
+];
 
 const trainUtilizationData = [
   { train: "T-001", utilization: 94, status: "Optimal" },
@@ -147,56 +163,64 @@ const trainUtilizationData = [
   { train: "T-007", utilization: 67, status: "Maintenance" },
   { train: "T-012", utilization: 91, status: "Optimal" },
   { train: "T-015", utilization: 82, status: "Standby" },
-]
+];
 
 const riskAssessmentData = [
   { category: "Weather", risk: 65, color: "#f59e0b" },
   { category: "Maintenance", risk: 45, color: "#ef4444" },
   { category: "Demand", risk: 25, color: "#10b981" },
   { category: "Technical", risk: 35, color: "#3b82f6" },
-]
+];
 
 export default function InductionReviewPage() {
-  const [plans, setPlans] = useState<InductionPlan[]>(mockInductionPlans)
-  const [selectedPlan, setSelectedPlan] = useState<InductionPlan | null>(null)
-  const [reviewNotes, setReviewNotes] = useState("")
-  const [activeTab, setActiveTab] = useState("overview")
+  const [plans, setPlans] = useState<InductionPlan[]>(mockInductionPlans);
+  const [selectedPlan, setSelectedPlan] = useState<InductionPlan | null>(null);
+  const [reviewNotes, setReviewNotes] = useState("");
+  const [activeTab, setActiveTab] = useState("overview");
 
   const handleApprove = (planId: string) => {
-    setPlans((prev) => prev.map((plan) => (plan.id === planId ? { ...plan, status: "approved" as const } : plan)))
-    setSelectedPlan(null)
-    setReviewNotes("")
-  }
+    setPlans((prev) =>
+      prev.map((plan) =>
+        plan.id === planId ? { ...plan, status: "approved" as const } : plan
+      )
+    );
+    setSelectedPlan(null);
+    setReviewNotes("");
+  };
 
   const handleReject = (planId: string, reason: string) => {
-    setPlans((prev) => prev.map((plan) => (plan.id === planId ? { ...plan, status: "rejected" as const } : plan)))
-    setSelectedPlan(null)
-    setReviewNotes("")
-  }
+    setPlans((prev) =>
+      prev.map((plan) =>
+        plan.id === planId ? { ...plan, status: "rejected" as const } : plan
+      )
+    );
+    setSelectedPlan(null);
+    setReviewNotes("");
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "approved":
-        return <CheckCircle className="h-4 w-4 text-green-500" />
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
       case "rejected":
-        return <XCircle className="h-4 w-4 text-red-500" />
+        return <XCircle className="h-4 w-4 text-red-500" />;
       default:
-        return <Clock className="h-4 w-4 text-yellow-500" />
+        return <Clock className="h-4 w-4 text-yellow-500" />;
     }
-  }
+  };
 
   const getRecommendationColor = (rec: string) => {
     switch (rec) {
       case "Service":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "Maintenance":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       case "Standby":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -217,7 +241,9 @@ export default function InductionReviewPage() {
           <Badge variant="outline" className="px-3 py-1">
             {plans.filter((p) => p.status === "pending").length} Pending Reviews
           </Badge>
-          <div className="text-sm text-muted-foreground">Review Window: 21:00 - 23:00 IST</div>
+          <div className="text-sm text-muted-foreground">
+            Review Window: 21:00 - 23:00 IST
+          </div>
         </div>
       </div>
 
@@ -237,8 +263,12 @@ export default function InductionReviewPage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Trains</p>
-                    <p className="text-2xl font-bold">{nightlyOverview.totalTrains}</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Total Trains
+                    </p>
+                    <p className="text-2xl font-bold">
+                      {nightlyOverview.totalTrains}
+                    </p>
                   </div>
                   <Train className="h-8 w-8 text-primary" />
                 </div>
@@ -248,8 +278,12 @@ export default function InductionReviewPage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Scheduled Services</p>
-                    <p className="text-2xl font-bold">{nightlyOverview.scheduledServices}</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Scheduled Services
+                    </p>
+                    <p className="text-2xl font-bold">
+                      {nightlyOverview.scheduledServices}
+                    </p>
                   </div>
                   <Calendar className="h-8 w-8 text-primary" />
                 </div>
@@ -259,11 +293,15 @@ export default function InductionReviewPage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Peak Demand</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Peak Demand
+                    </p>
                     <p className="text-2xl font-bold">
                       {nightlyOverview.predictedDemand.peak.passengers.toLocaleString()}
                     </p>
-                    <p className="text-xs text-muted-foreground">at {nightlyOverview.predictedDemand.peak.time}</p>
+                    <p className="text-xs text-muted-foreground">
+                      at {nightlyOverview.predictedDemand.peak.time}
+                    </p>
                   </div>
                   <TrendingUp className="h-8 w-8 text-primary" />
                 </div>
@@ -273,8 +311,12 @@ export default function InductionReviewPage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Weather Impact</p>
-                    <p className="text-lg font-bold">{nightlyOverview.weatherImpact.condition}</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Weather Impact
+                    </p>
+                    <p className="text-lg font-bold">
+                      {nightlyOverview.weatherImpact.condition}
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       +{nightlyOverview.weatherImpact.crowdIncrease} crowd
                     </p>
@@ -297,7 +339,7 @@ export default function InductionReviewPage() {
                   <XAxis dataKey="train" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="utilization" fill="hsl(var(--primary))" />
+                  <Bar dataKey="utilization" fill="rgba(255, 182, 193, 0.7)" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -311,7 +353,10 @@ export default function InductionReviewPage() {
             <CardContent>
               <div className="space-y-3">
                 {nightlyOverview.aiRecommendations.map((rec, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg"
+                  >
                     <div className="w-2 h-2 rounded-full bg-primary mt-2" />
                     <p className="text-sm">{rec}</p>
                   </div>
@@ -341,7 +386,13 @@ export default function InductionReviewPage() {
                     strokeWidth={2}
                     name="Predicted"
                   />
-                  <Line type="monotone" dataKey="actual" stroke="hsl(var(--success))" strokeWidth={2} name="Actual" />
+                  <Line
+                    type="monotone"
+                    dataKey="actual"
+                    stroke="hsl(var(--success))"
+                    strokeWidth={2}
+                    name="Actual"
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -385,52 +436,80 @@ export default function InductionReviewPage() {
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
                         {getStatusIcon(plan.status)}
-                        <span className="font-semibold text-lg">{plan.trainNumber}</span>
+                        <span className="font-semibold text-lg">
+                          {plan.trainNumber}
+                        </span>
                       </div>
-                      <Badge className={getRecommendationColor(plan.recommendation)}>{plan.recommendation}</Badge>
+                      <Badge
+                        className={getRecommendationColor(plan.recommendation)}
+                      >
+                        {plan.recommendation}
+                      </Badge>
                       <div className="text-sm text-muted-foreground">
                         {plan.date} at {plan.time}
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <div className="text-sm text-muted-foreground">Fitness Score</div>
-                        <div className="text-2xl font-bold">{plan.fitnessScore}%</div>
+                        <div className="text-sm text-muted-foreground">
+                          Fitness Score
+                        </div>
+                        <div className="text-2xl font-bold">
+                          {plan.fitnessScore}%
+                        </div>
                       </div>
                       {plan.status === "pending" && (
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" onClick={() => setSelectedPlan(plan)}>
+                            <Button
+                              variant="outline"
+                              onClick={() => setSelectedPlan(plan)}
+                            >
                               <FileText className="h-4 w-4 mr-2" />
                               Review
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                             <DialogHeader>
-                              <DialogTitle>Detailed Review - {plan.trainNumber}</DialogTitle>
+                              <DialogTitle>
+                                Detailed Review - {plan.trainNumber}
+                              </DialogTitle>
                             </DialogHeader>
 
                             {selectedPlan && (
                               <div className="space-y-6">
                                 {/* AI Reasoning */}
                                 <div>
-                                  <h3 className="font-semibold mb-2">AI Analysis & Reasoning</h3>
-                                  <p className="text-sm bg-muted p-3 rounded-lg">{selectedPlan.aiReasoning}</p>
+                                  <h3 className="font-semibold mb-2">
+                                    AI Analysis & Reasoning
+                                  </h3>
+                                  <p className="text-sm bg-muted p-3 rounded-lg">
+                                    {selectedPlan.aiReasoning}
+                                  </p>
                                 </div>
 
                                 {/* Constraints Check */}
                                 <div>
-                                  <h3 className="font-semibold mb-3">System Constraints Validation</h3>
+                                  <h3 className="font-semibold mb-3">
+                                    System Constraints Validation
+                                  </h3>
                                   <div className="grid grid-cols-2 gap-3">
-                                    {Object.entries(selectedPlan.constraints).map(([key, value]) => (
-                                      <div key={key} className="flex items-center gap-2">
+                                    {Object.entries(
+                                      selectedPlan.constraints
+                                    ).map(([key, value]) => (
+                                      <div
+                                        key={key}
+                                        className="flex items-center gap-2"
+                                      >
                                         {value ? (
                                           <CheckCircle className="h-4 w-4 text-green-500" />
                                         ) : (
                                           <XCircle className="h-4 w-4 text-red-500" />
                                         )}
                                         <span className="text-sm capitalize">
-                                          {key.replace(/([A-Z])/g, " $1").toLowerCase()}
+                                          {key
+                                            .replace(/([A-Z])/g, " $1")
+                                            .toLowerCase()}
                                         </span>
                                       </div>
                                     ))}
@@ -445,35 +524,51 @@ export default function InductionReviewPage() {
                                       Risk Factors
                                     </h3>
                                     <ul className="space-y-1">
-                                      {selectedPlan.riskFactors.map((risk, index) => (
-                                        <li key={index} className="text-sm text-yellow-700 bg-yellow-50 p-2 rounded">
-                                          • {risk}
-                                        </li>
-                                      ))}
+                                      {selectedPlan.riskFactors.map(
+                                        (risk, index) => (
+                                          <li
+                                            key={index}
+                                            className="text-sm text-yellow-700 bg-yellow-50 p-2 rounded"
+                                          >
+                                            • {risk}
+                                          </li>
+                                        )
+                                      )}
                                     </ul>
                                   </div>
                                 )}
 
                                 {/* Review Notes */}
                                 <div>
-                                  <h3 className="font-semibold mb-2">Review Notes</h3>
+                                  <h3 className="font-semibold mb-2">
+                                    Review Notes
+                                  </h3>
                                   <Textarea
                                     placeholder="Add your review notes and reasoning..."
                                     value={reviewNotes}
-                                    onChange={(e) => setReviewNotes(e.target.value)}
+                                    onChange={(e) =>
+                                      setReviewNotes(e.target.value)
+                                    }
                                     className="min-h-[100px]"
                                   />
                                 </div>
 
                                 {/* Action Buttons */}
                                 <div className="flex gap-3 pt-4 border-t">
-                                  <Button onClick={() => handleApprove(selectedPlan.id)} className="flex-1">
+                                  <Button
+                                    onClick={() =>
+                                      handleApprove(selectedPlan.id)
+                                    }
+                                    className="flex-1"
+                                  >
                                     <CheckCircle className="h-4 w-4 mr-2" />
                                     Approve Plan
                                   </Button>
                                   <Button
                                     variant="destructive"
-                                    onClick={() => handleReject(selectedPlan.id, reviewNotes)}
+                                    onClick={() =>
+                                      handleReject(selectedPlan.id, reviewNotes)
+                                    }
                                     className="flex-1"
                                   >
                                     <XCircle className="h-4 w-4 mr-2" />
@@ -489,13 +584,16 @@ export default function InductionReviewPage() {
                   </div>
 
                   {/* Quick Summary */}
-                  <div className="text-sm text-muted-foreground">{plan.aiReasoning.substring(0, 120)}...</div>
+                  <div className="text-sm text-muted-foreground">
+                    {plan.aiReasoning.substring(0, 120)}...
+                  </div>
 
                   {plan.riskFactors.length > 0 && (
                     <div className="mt-2 flex items-center gap-2">
                       <AlertTriangle className="h-4 w-4 text-yellow-500" />
                       <span className="text-sm text-yellow-700">
-                        {plan.riskFactors.length} risk factor{plan.riskFactors.length > 1 ? "s" : ""} identified
+                        {plan.riskFactors.length} risk factor
+                        {plan.riskFactors.length > 1 ? "s" : ""} identified
                       </span>
                     </div>
                   )}
@@ -510,7 +608,8 @@ export default function InductionReviewPage() {
           <Card>
             <CardHeader>
               <CardTitle>
-                Tomorrow's Operational Schedule - {new Date(Date.now() + 86400000).toLocaleDateString()}
+                Tomorrow's Operational Schedule -{" "}
+                {new Date(Date.now() + 86400000).toLocaleDateString()}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -534,12 +633,19 @@ export default function InductionReviewPage() {
                   <h4 className="font-semibold mb-3">Maintenance Windows</h4>
                   <div className="space-y-2">
                     {nightlyOverview.maintenanceWindows.map((window, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                      >
                         <div className="flex items-center gap-3">
                           <Badge variant="outline">{window.train}</Badge>
-                          <span className="text-sm">{window.type} Maintenance</span>
+                          <span className="text-sm">
+                            {window.type} Maintenance
+                          </span>
                         </div>
-                        <div className="text-sm text-muted-foreground">{window.window}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {window.window}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -550,5 +656,5 @@ export default function InductionReviewPage() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

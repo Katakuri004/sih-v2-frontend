@@ -1,49 +1,54 @@
-"use client"
+"use client";
 
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Viewer3D } from "./3d-viewer"
-import { TrainDetailsPanel } from "./train-details-panel"
-import { useState, useEffect } from "react"
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Viewer3D } from "./3d-viewer";
+import { TrainDetailsPanel } from "./train-details-panel";
+import { useState, useEffect } from "react";
 
 interface Train3D {
-  id: string
-  trainNumber: string
-  position: { x: number; y: number; z: number }
-  status: "active" | "maintenance" | "standby"
-  route: string
-  passengers: number
-  speed: number
+  id: string;
+  trainNumber: string;
+  position: { x: number; y: number; z: number };
+  status: "active" | "maintenance" | "standby";
+  route: string;
+  passengers: number;
+  speed: number;
 }
 
 export default function DigitalFleetShadow() {
-  const [selectedTrain, setSelectedTrain] = useState<Train3D | null>(null)
-  const [selectedScenario, setSelectedScenario] = useState("normal")
-  const [isVisible, setIsVisible] = useState(false)
-  const [viewMode, setViewMode] = useState<"top" | "isometric">("isometric")
-  const [playingRollout, setPlayingRollout] = useState(false)
+  const [selectedTrain, setSelectedTrain] = useState<Train3D | null>(null);
+  const [selectedScenario, setSelectedScenario] = useState("normal");
+  const [isVisible, setIsVisible] = useState(false);
+  const [viewMode, setViewMode] = useState<"top" | "isometric">("isometric");
+  const [playingRollout, setPlayingRollout] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 200)
-    return () => clearTimeout(timer)
-  }, [])
+    const timer = setTimeout(() => setIsVisible(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleScenarioChange = (scenario: string) => {
-    setSelectedScenario(scenario)
+    setSelectedScenario(scenario);
     // Reset train selection when scenario changes
-    setSelectedTrain(null)
-    if (!enabled) {
-      setSelectedTrain(null)
-    }
-  }
+    setSelectedTrain(null);
+  };
 
   return (
-    <div className={`space-y-6 transition-all duration-500 ${isVisible ? "animate-fade-in" : "opacity-0"}`}>
+    <div
+      className={`space-y-6 transition-all duration-500 ${
+        isVisible ? "animate-fade-in" : "opacity-0"
+      }`}
+    >
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Digital Fleet Shadow</h1>
-          <p className="text-muted-foreground mt-1">Interactive 3D visualization and simulation platform</p>
+          <h1 className="text-3xl font-bold text-foreground">
+            Digital Fleet Shadow
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Interactive 3D visualization and simulation platform
+          </p>
         </div>
 
         {/* Scenario Selector */}
@@ -52,7 +57,9 @@ export default function DigitalFleetShadow() {
             <button
               onClick={() => setViewMode("top")}
               className={`px-3 py-1.5 rounded ${
-                viewMode === "top" ? "bg-primary text-primary-foreground" : "bg-card hover:bg-muted"
+                viewMode === "top"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-card hover:bg-muted"
               }`}
             >
               Top View
@@ -60,7 +67,9 @@ export default function DigitalFleetShadow() {
             <button
               onClick={() => setViewMode("isometric")}
               className={`px-3 py-1.5 rounded ${
-                viewMode === "isometric" ? "bg-primary text-primary-foreground" : "bg-card hover:bg-muted"
+                viewMode === "isometric"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-card hover:bg-muted"
               }`}
             >
               Isometric
@@ -94,7 +103,10 @@ export default function DigitalFleetShadow() {
 
         {/* Details Panel */}
         <div className="lg:col-span-1">
-          <TrainDetailsPanel train={selectedTrain} scenario={selectedScenario} />
+          <TrainDetailsPanel
+            train={selectedTrain}
+            scenario={selectedScenario}
+          />
         </div>
       </div>
 
@@ -105,19 +117,24 @@ export default function DigitalFleetShadow() {
           <button
             onClick={() => setPlayingRollout(!playingRollout)}
             className={`px-4 py-2 rounded ${
-              playingRollout ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"
+              playingRollout
+                ? "bg-destructive text-destructive-foreground"
+                : "bg-primary text-primary-foreground"
             }`}
           >
             {playingRollout ? "Stop" : "Play Animation"}
           </button>
         </div>
-        
+
         {/* Timeline */}
         <div className="space-y-2">
           <div className="h-2 bg-muted rounded-full relative">
             <div
               className="absolute h-full bg-primary rounded-full transition-all"
-              style={{ width: playingRollout ? "100%" : "0%", transitionDuration: playingRollout ? "30s" : "0s" }}
+              style={{
+                width: playingRollout ? "100%" : "0%",
+                transitionDuration: playingRollout ? "30s" : "0s",
+              }}
             />
           </div>
           <div className="flex justify-between text-sm text-muted-foreground">
@@ -148,5 +165,5 @@ export default function DigitalFleetShadow() {
         </div>
       </div>
     </div>
-  )
+  );
 }
