@@ -2,12 +2,13 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { kochiMetroStations } from "@/components/metro-map/interactive-map"
+import type { MetroLine } from "@/types/metro"
 import { TrendingUp } from "lucide-react"
 
 interface HeatmapData {
   stationId: string
   stationName: string
-  line: "blue" | "green"
+  line: MetroLine
   crowdLevel: number // 0-100
   trend: "increasing" | "decreasing" | "stable"
   peakTime: string
@@ -77,8 +78,8 @@ export function CrowdHeatmap() {
               Blue Line
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-              {heatmapData
-                .filter((station) => station.line === "blue")
+          {heatmapData
+            .filter((station) => station.line === "Blue")
                 .map((station) => (
                   <div key={station.stationId} className={`p-3 rounded-lg border ${getCrowdColor(station.crowdLevel)}`}>
                     <div className="flex items-center justify-between mb-2">
@@ -102,7 +103,7 @@ export function CrowdHeatmap() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
               {heatmapData
-                .filter((station) => station.line === "green")
+                .filter((station) => station.line !== "Blue")
                 .map((station) => (
                   <div key={station.stationId} className={`p-3 rounded-lg border ${getCrowdColor(station.crowdLevel)}`}>
                     <div className="flex items-center justify-between mb-2">

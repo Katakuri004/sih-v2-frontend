@@ -13,13 +13,7 @@ import { Calendar, Plus, Clock, CheckCircle, XCircle, Bot, Undo2 } from "lucide-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScheduleAlert } from "./schedule-alert"
 
-declare namespace JSX {
-  interface IntrinsicElements {
-    p: React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
-    span: React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
-    strong: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-  }
-}
+
 
 // Types
 export interface MaintenanceSchedule {

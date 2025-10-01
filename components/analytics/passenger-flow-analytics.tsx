@@ -7,8 +7,9 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { TrendingUp, Clock, Calendar, CalendarDays } from "lucide-react"
 
 // Generate mock data for different time periods
-const generate30MinData = () => {
-  const data = []
+type FlowPoint = { time: string; passengers: number; inbound: number; outbound: number }
+const generate30MinData = (): FlowPoint[] => {
+  const data: FlowPoint[] = []
   const now = new Date()
   for (let i = 29; i >= 0; i--) {
     const time = new Date(now.getTime() - i * 60000)
@@ -22,8 +23,8 @@ const generate30MinData = () => {
   return data
 }
 
-const generate24HourData = () => {
-  const data = []
+const generate24HourData = (): FlowPoint[] => {
+  const data: FlowPoint[] = []
   for (let i = 0; i < 24; i++) {
     const hour = i.toString().padStart(2, "0") + ":00"
     const basePassengers = i < 6 || i > 22 ? 100 : (i >= 7 && i <= 9) || (i >= 17 && i <= 19) ? 800 : 400
@@ -37,8 +38,8 @@ const generate24HourData = () => {
   return data
 }
 
-const generate7DayData = () => {
-  const data = []
+const generate7DayData = (): FlowPoint[] => {
+  const data: FlowPoint[] = []
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
   days.forEach((day, index) => {
     const isWeekend = index >= 5

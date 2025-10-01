@@ -4,22 +4,12 @@ import * as React from "react";
 import { SVGProps } from "react";
 import { motion, useSpring } from "framer-motion";
 import { MapLegend } from "./map-legend";
-import { type MetroLine } from "@/types/metro";
+import type { MetroLine, Station } from "@/types/metro";
 
 // 1. DEFINED TYPES AND DATA
 // ===================================
 
-export interface Station {
-  id: string;
-  name: string;
-  position: {
-    x: number;
-    y: number;
-  };
-  lines: MetroLine[];
-  status: "active" | "delayed" | "maintenance";
-  crowdLevel: "low" | "medium" | "high";
-}
+// Reuse Station type from shared `@/types/metro`
 
 interface InteractiveMapProps {
   onStationClick: (station: Station) => void;
@@ -31,7 +21,8 @@ export const kochiMetroStations: Station[] = [
     id: "1",
     name: "Aluva",
     position: { x: 80, y: 20 },
-    lines: ["BlueLine"],
+  line: "Blue",
+  connections: [],
     status: "active",
     crowdLevel: "medium",
   },
@@ -39,7 +30,8 @@ export const kochiMetroStations: Station[] = [
     id: "2",
     name: "Pulinchodu",
     position: { x: 80, y: 60 },
-    lines: ["BlueLine"],
+  line: "Blue",
+  connections: [],
     status: "active",
     crowdLevel: "low",
   },
@@ -47,7 +39,8 @@ export const kochiMetroStations: Station[] = [
     id: "3",
     name: "Companypady",
     position: { x: 80, y: 100 },
-    lines: ["BlueLine"],
+  line: "Blue",
+  connections: [],
     status: "active",
     crowdLevel: "high",
   },
@@ -55,7 +48,8 @@ export const kochiMetroStations: Station[] = [
     id: "4",
     name: "Ambattukavu",
     position: { x: 80, y: 140 },
-    lines: ["BlueLine"],
+  line: "Blue",
+  connections: [],
     status: "maintenance",
     crowdLevel: "low",
   },
@@ -63,7 +57,8 @@ export const kochiMetroStations: Station[] = [
     id: "5",
     name: "Kalamassery",
     position: { x: 80, y: 180 },
-    lines: ["BlueLine", "AquaLine"],
+  line: "Blue",
+  connections: [],
     status: "active",
     crowdLevel: "medium",
   },
@@ -71,7 +66,8 @@ export const kochiMetroStations: Station[] = [
     id: "6",
     name: "CUSAT",
     position: { x: 120, y: 180 },
-    lines: ["AquaLine"],
+  line: "AquaLine",
+  connections: [],
     status: "active",
     crowdLevel: "high",
   },
@@ -79,7 +75,8 @@ export const kochiMetroStations: Station[] = [
     id: "7",
     name: "Pathadipalam",
     position: { x: 160, y: 180 },
-    lines: ["AquaLine"],
+  line: "AquaLine",
+  connections: [],
     status: "delayed",
     crowdLevel: "medium",
   },
@@ -87,7 +84,8 @@ export const kochiMetroStations: Station[] = [
     id: "8",
     name: "Edapally",
     position: { x: 200, y: 180 },
-    lines: ["AquaLine", "PurpleLine"],
+  line: "AquaLine",
+  connections: [],
     status: "active",
     crowdLevel: "high",
   },
@@ -97,11 +95,9 @@ export const kochiMetroStations: Station[] = [
 // ===================================
 
 const lineColors: Record<MetroLine, string> = {
-  BlueLine: "#3b82f6",
+  Blue: "#3b82f6",
   AquaLine: "#06b6d4",
-  PurpleLine: "#a855f7",
-  Red: "#ef4444",
-  Green: "#22c55e",
+  Purple: "#a855f7",
 } as const;
 
 const statusColors = {
@@ -142,7 +138,7 @@ export function InteractiveMap({
 
   // Helper function to get line paths from station data
   const getLinePath = (line: keyof typeof lineColors) => {
-    const stationsOnLine = kochiMetroStations.filter((s) => s.lines.includes(line));
+    const stationsOnLine = kochiMetroStations.filter((s) => s.line === line);
     if (stationsOnLine.length < 2) return "";
     
     // Simple path generator: creates straight lines between stations in order
@@ -198,7 +194,7 @@ export function InteractiveMap({
             <circle
               r="6"
               fill={statusColors[station.status]}
-              stroke={hoveredStation === station.id ? "white" : station.lines.length > 1 ? lineColors[station.lines[0]] : "transparent"}
+              stroke={hoveredStation === station.id ? "white" : lineColors[station.line] ?? "transparent"}
               strokeWidth="2"
             />
 

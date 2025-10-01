@@ -24,15 +24,5 @@ declare module "framer-motion" {
 }
 
 declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      svg: React.SVGProps<SVGSVGElement>;
-      path: React.SVGProps<SVGPathElement>;
-      circle: React.SVGProps<SVGCircleElement>;
-      g: React.SVGProps<SVGGElement>;
-      text: React.SVGProps<SVGTextElement>;
-      div: React.HTMLProps<HTMLDivElement>;
-      span: React.HTMLProps<HTMLSpanElement>;
-    }
-  }
+  // Intentionally left blank: rely on React's existing JSX.IntrinsicElements
 }

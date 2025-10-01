@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts"
 import { Users, Clock, Train, TrendingUp, AlertTriangle, CheckCircle } from "lucide-react"
-import type { Station } from "./interactive-map"
+import type { Station } from "@/types/metro"
 
 interface StationDetailTabsProps {
   station: Station
@@ -61,7 +61,7 @@ export function StationDetailTabs({ station }: StationDetailTabsProps) {
   const getUpcomingTrains = () => [
     {
       id: "M101",
-      destination: station.line === "Blue" ? "Ernakulam South" : "Elamkulam",
+  destination: station.line === "Blue" ? "Ernakulam South" : "Elamkulam",
       arrival: "2 min",
       status: station.status === "delayed" ? "delayed" : "on-time",
       crowdLevel: "medium",
@@ -69,7 +69,7 @@ export function StationDetailTabs({ station }: StationDetailTabsProps) {
     },
     {
       id: "M102",
-      destination: station.line === "Blue" ? "Aluva" : "Thykoodam",
+  destination: station.line === "Blue" ? "Aluva" : "Thykoodam",
       arrival: "8 min",
       status: "on-time",
       crowdLevel: "low",
@@ -77,7 +77,7 @@ export function StationDetailTabs({ station }: StationDetailTabsProps) {
     },
     {
       id: "M103",
-      destination: station.line === "Blue" ? "Ernakulam South" : "Elamkulam",
+  destination: station.line === "Blue" ? "Ernakulam South" : "Elamkulam",
       arrival: "15 min",
       status: "on-time",
       crowdLevel: "high",
@@ -123,8 +123,8 @@ export function StationDetailTabs({ station }: StationDetailTabsProps) {
             {station.name} Station
           </CardTitle>
           <div className="flex gap-2">
-            <Badge variant={station.line === "blue" ? "default" : "secondary"}>
-              {station.line === "blue" ? "Blue Line" : "Green Line"}
+            <Badge variant={station.line === "Blue" ? "default" : "secondary"}>
+              {station.line === "Blue" ? "Blue Line" : "Green Line"}
             </Badge>
             <Badge variant={getCrowdBadgeVariant(station.crowdLevel)}>{station.crowdLevel} crowd</Badge>
           </div>
@@ -178,7 +178,9 @@ export function StationDetailTabs({ station }: StationDetailTabsProps) {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-2xl font-bold">{upcomingTrains[0].arrival}</div>
+                    <Badge variant={station.line === "Blue" ? "default" : "secondary"}>
+                      {station.line === "Blue" ? "Blue Line" : station.line}
+                    </Badge>
                     <div className="text-sm text-muted-foreground">Train {upcomingTrains[0].id}</div>
                   </div>
                   <div className="text-right">

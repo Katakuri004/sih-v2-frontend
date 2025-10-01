@@ -2,22 +2,6 @@
 
 import * as React from "react"
 
-declare module "react" {
-  namespace JSX {
-    interface IntrinsicElements {
-      path: React.SVGProps<SVGPathElement>;
-      div: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-      svg: React.SVGProps<SVGSVGElement>;
-      g: React.SVGProps<SVGGElement>;
-      line: React.SVGProps<SVGLineElement>;
-      circle: React.SVGProps<SVGCircleElement>;
-      rect: React.SVGProps<SVGRectElement>;
-      text: React.SVGProps<SVGTextElement>;
-      animate: React.SVGProps<SVGAnimateElement>;
-    }
-  }
-}
-
 export function MapBackground() {
   return (
     <g className="map-background">

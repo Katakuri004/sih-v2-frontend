@@ -6,17 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useState } from "react";
 
-interface Train3D {
-  id: string;
-  trainNumber: string;
-  position: { x: number; y: number; z: number };
-  status: "ready" | "maintenance" | "cleaning" | "standby";
-  healthScore: number;
-  lastMaintenance: string;
-  nextMaintenance: string;
-  totalKm: number;
-  bay: number;
-}
+import type { Train3D } from "./types";
 
 interface TrainDetailsPanelProps {
   train: Train3D | null;
@@ -109,7 +99,7 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
             <div className="grid grid-cols-2 gap-4">
               <Card className="p-4">
                 <div className="text-2xl font-bold">
-                  {(train.totalKm / 1000).toFixed(1)}k
+                  {typeof train.totalKm === 'number' ? (train.totalKm / 1000).toFixed(1) + 'k' : '—'}
                 </div>
                 <div className="text-sm text-muted-foreground">Total KM</div>
               </Card>
