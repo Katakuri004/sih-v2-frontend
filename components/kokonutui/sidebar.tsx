@@ -175,6 +175,13 @@ export default function Sidebar() {
                 Induction Review
               </NavItem>
               <NavItem
+                href="/branding-monitor"
+                icon={BarChart3}
+                isActive={pathname === "/branding-monitor"}
+              >
+                Branding & Revenue Monitor
+              </NavItem>
+              <NavItem
                 href="/fleet-shadow"
                 icon={View}
                 isActive={pathname === "/fleet-shadow"}

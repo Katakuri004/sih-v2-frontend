@@ -60,24 +60,24 @@ export function StationDetailTabs({ station }: StationDetailTabsProps) {
 
   const getUpcomingTrains = () => [
     {
-      id: station.nextTrain,
-      destination: station.line === "blue" ? "Ernakulam South" : "Elamkulam",
+      id: "M101",
+      destination: station.line === "Blue" ? "Ernakulam South" : "Elamkulam",
       arrival: "2 min",
-      status: station.trainStatus,
+      status: station.status === "delayed" ? "delayed" : "on-time",
       crowdLevel: "medium",
       cars: 3,
     },
     {
-      id: `M${Number.parseInt(station.nextTrain.slice(1)) + 1}`,
-      destination: station.line === "blue" ? "Aluva" : "Thykoodam",
+      id: "M102",
+      destination: station.line === "Blue" ? "Aluva" : "Thykoodam",
       arrival: "8 min",
       status: "on-time",
       crowdLevel: "low",
       cars: 3,
     },
     {
-      id: `M${Number.parseInt(station.nextTrain.slice(1)) + 2}`,
-      destination: station.line === "blue" ? "Ernakulam South" : "Elamkulam",
+      id: "M103",
+      destination: station.line === "Blue" ? "Ernakulam South" : "Elamkulam",
       arrival: "15 min",
       status: "on-time",
       crowdLevel: "high",
@@ -338,14 +338,16 @@ export function StationDetailTabs({ station }: StationDetailTabsProps) {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Recommendation</CardTitle>
+                <CardTitle className="text-lg truncate">Recommendation</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold mb-2">16:45</div>
                 <p className="text-sm text-muted-foreground">Best time to travel (low crowd)</p>
-                <Badge variant="default" className="mt-2">
-                  Optimal Window
-                </Badge>
+                <div className="flex justify-center">
+                  <Badge variant="default" className="mt-2 inline-flex items-center justify-center">
+                    Optimal Window
+                  </Badge>
+                </div>
               </CardContent>
             </Card>
           </div>

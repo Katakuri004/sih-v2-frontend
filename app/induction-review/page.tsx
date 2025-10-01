@@ -1,43 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Layout from "@/components/kokonutui/layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertTriangle,
-  FileText,
-  User,
-  TrendingUp,
-  Calendar,
-  Train,
-} from "lucide-react";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { CheckCircle, XCircle, AlertTriangle, User } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 interface InductionPlan {
   id: string;
@@ -67,8 +38,7 @@ const mockInductionPlans: InductionPlan[] = [
     time: "05:30",
     recommendation: "Service",
     fitnessScore: 94,
-    aiReasoning:
-      "All systems optimal. Fitness certificates valid for 72 hours. No pending job cards. Branding exposure within SLA limits.",
+    aiReasoning: "All systems optimal. Fitness certificates valid for 72 hours. No pending job cards. Branding exposure within SLA limits.",
     constraints: {
       fitnessValid: true,
       jobCardsClosed: true,
@@ -87,8 +57,7 @@ const mockInductionPlans: InductionPlan[] = [
     time: "06:00",
     recommendation: "Maintenance",
     fitnessScore: 67,
-    aiReasoning:
-      "Brake system showing degraded performance. Telecom clearance expires in 18 hours. Preventive maintenance recommended.",
+    aiReasoning: "Brake system showing degraded performance. Telecom clearance expires in 18 hours. Preventive maintenance recommended.",
     constraints: {
       fitnessValid: true,
       jobCardsClosed: false,
@@ -107,8 +76,7 @@ const mockInductionPlans: InductionPlan[] = [
     time: "07:15",
     recommendation: "Standby",
     fitnessScore: 82,
-    aiReasoning:
-      "Good overall condition but mileage imbalance detected. Recommend standby to allow T-003 higher priority service allocation.",
+    aiReasoning: "Good overall condition but mileage imbalance detected. Recommend standby to allow T-003 higher priority service allocation.",
     constraints: {
       fitnessValid: true,
       jobCardsClosed: true,
@@ -126,16 +94,8 @@ const nightlyOverview = {
   date: "2024-01-25",
   totalTrains: 24,
   scheduledServices: 156,
-  predictedDemand: {
-    peak: { time: "08:30", passengers: 12500 },
-    offPeak: { time: "14:00", passengers: 3200 },
-    evening: { time: "18:45", passengers: 11800 },
-  },
-  weatherImpact: {
-    condition: "Light Rain",
-    delayRisk: "Medium",
-    crowdIncrease: "15%",
-  },
+  predictedDemand: { peak: { time: "08:30", passengers: 12500 } },
+  weatherImpact: { condition: "Light Rain", delayRisk: "Medium", crowdIncrease: "15%" },
   maintenanceWindows: [
     { train: "T-007", window: "23:30-04:00", type: "Preventive" },
     { train: "T-015", window: "01:00-05:30", type: "Corrective" },
@@ -148,21 +108,12 @@ const nightlyOverview = {
 };
 
 const demandPredictionData = [
-  { time: "05:00", predicted: 800, actual: 750, confidence: 95 },
-  { time: "06:00", predicted: 2100, actual: 2050, confidence: 92 },
-  { time: "07:00", predicted: 4500, actual: 4200, confidence: 88 },
-  { time: "08:00", predicted: 8200, actual: 8100, confidence: 94 },
-  { time: "09:00", predicted: 12500, actual: null, confidence: 87 },
-  { time: "10:00", predicted: 6800, actual: null, confidence: 91 },
-  { time: "11:00", predicted: 4200, actual: null, confidence: 89 },
-];
-
-const trainUtilizationData = [
-  { train: "T-001", utilization: 94, status: "Optimal" },
-  { train: "T-003", utilization: 87, status: "Good" },
-  { train: "T-007", utilization: 67, status: "Maintenance" },
-  { train: "T-012", utilization: 91, status: "Optimal" },
-  { train: "T-015", utilization: 82, status: "Standby" },
+  { time: "05:00", predicted: 800, actual: 750 },
+  { time: "06:00", predicted: 2100, actual: 2050 },
+  { time: "07:00", predicted: 4500, actual: 4200 },
+  { time: "08:00", predicted: 8200, actual: 8100 },
+  { time: "09:00", predicted: 12500, actual: null },
+  { time: "10:00", predicted: 6800, actual: null },
 ];
 
 const riskAssessmentData = [
@@ -176,37 +127,15 @@ export default function InductionReviewPage() {
   const [plans, setPlans] = useState<InductionPlan[]>(mockInductionPlans);
   const [selectedPlan, setSelectedPlan] = useState<InductionPlan | null>(null);
   const [reviewNotes, setReviewNotes] = useState("");
-  const [activeTab, setActiveTab] = useState("overview");
 
   const handleApprove = (planId: string) => {
-    setPlans((prev) =>
-      prev.map((plan) =>
-        plan.id === planId ? { ...plan, status: "approved" as const } : plan
-      )
-    );
+    setPlans((prev) => prev.map((p) => (p.id === planId ? { ...p, status: "approved" } : p)));
     setSelectedPlan(null);
-    setReviewNotes("");
   };
 
   const handleReject = (planId: string, reason: string) => {
-    setPlans((prev) =>
-      prev.map((plan) =>
-        plan.id === planId ? { ...plan, status: "rejected" as const } : plan
-      )
-    );
+    setPlans((prev) => prev.map((p) => (p.id === planId ? { ...p, status: "rejected" } : p)));
     setSelectedPlan(null);
-    setReviewNotes("");
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "approved":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case "rejected":
-        return <XCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-    }
   };
 
   const getRecommendationColor = (rec: string) => {
@@ -223,438 +152,230 @@ export default function InductionReviewPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <User className="h-6 w-6 text-primary" />
-            </div>
-            Maintenance Officer Review
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Nightly overview and manual review of AI-generated induction plans
-          </p>
-        </div>
-        <div className="flex items-center gap-4">
-          <Badge variant="outline" className="px-3 py-1">
-            {plans.filter((p) => p.status === "pending").length} Pending Reviews
-          </Badge>
-          <div className="text-sm text-muted-foreground">
-            Review Window: 21:00 - 23:00 IST
-          </div>
-        </div>
-      </div>
-
-      {/* Comprehensive Tabs for Nightly Overview, Predictions, and Manual Review */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Nightly Overview</TabsTrigger>
-          <TabsTrigger value="predictions">AI Predictions</TabsTrigger>
-          <TabsTrigger value="review">Manual Review</TabsTrigger>
-          <TabsTrigger value="schedule">Tomorrow's Schedule</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-6">
-          {/* Key Metrics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Total Trains
-                    </p>
-                    <p className="text-2xl font-bold">
-                      {nightlyOverview.totalTrains}
-                    </p>
-                  </div>
-                  <Train className="h-8 w-8 text-primary" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Scheduled Services
-                    </p>
-                    <p className="text-2xl font-bold">
-                      {nightlyOverview.scheduledServices}
-                    </p>
-                  </div>
-                  <Calendar className="h-8 w-8 text-primary" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Peak Demand
-                    </p>
-                    <p className="text-2xl font-bold">
-                      {nightlyOverview.predictedDemand.peak.passengers.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      at {nightlyOverview.predictedDemand.peak.time}
-                    </p>
-                  </div>
-                  <TrendingUp className="h-8 w-8 text-primary" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Weather Impact
-                    </p>
-                    <p className="text-lg font-bold">
-                      {nightlyOverview.weatherImpact.condition}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      +{nightlyOverview.weatherImpact.crowdIncrease} crowd
-                    </p>
-                  </div>
-                  <AlertTriangle className="h-8 w-8 text-warning" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Train Utilization Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Train Utilization Overview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={trainUtilizationData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="train" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="utilization" fill="rgba(255, 182, 193, 0.7)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* AI Recommendations */}
-          <Card>
-            <CardHeader>
-              <CardTitle>AI Recommendations for Tomorrow</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {nightlyOverview.aiRecommendations.map((rec, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg"
-                  >
-                    <div className="w-2 h-2 rounded-full bg-primary mt-2" />
-                    <p className="text-sm">{rec}</p>
-                  </div>
-                ))}
+    <Layout>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <User className="h-6 w-6 text-primary" />
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              Induction Review — Nightly Operator Console
+            </h1>
+            <p className="text-muted-foreground mt-1 max-w-2xl">
+              Review AI-ranked induction plans (21:00–23:00 IST). Approve, reject or simulate what-if scenarios.
+            </p>
+          </div>
 
-        <TabsContent value="predictions" className="space-y-6">
-          {/* Demand Prediction Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Passenger Demand Prediction vs Actual</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={demandPredictionData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="predicted"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    name="Predicted"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="actual"
-                    stroke="hsl(var(--success))"
-                    strokeWidth={2}
-                    name="Actual"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <div className="flex items-center gap-4">
+            <Badge variant="outline" className="px-3 py-1">
+              {plans.filter((p) => p.status === "pending").length} Pending
+            </Badge>
+            <div className="text-sm text-muted-foreground">Review Window: 21:00 - 23:00 IST</div>
+          </div>
+        </div>
 
-          {/* Risk Assessment */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Risk Assessment Matrix</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={riskAssessmentData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    fill="#8884d8"
-                    dataKey="risk"
-                    label={({ category, risk }) => `${category}: ${risk}%`}
-                  >
-                    {riskAssessmentData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </TabsContent>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-5 space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Ranked Induction Plans</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Button variant="ghost">Refresh Data</Button>
+                  <Button variant="outline">Run Simulation</Button>
+                  <div className="ml-auto text-sm text-muted-foreground">Updated: {nightlyOverview.date}</div>
+                </div>
 
-        <TabsContent value="review" className="space-y-6">
-          {/* Induction Plans Grid */}
-          <div className="grid gap-4">
-            {plans.map((plan) => (
-              <Card key={plan.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(plan.status)}
-                        <span className="font-semibold text-lg">
-                          {plan.trainNumber}
-                        </span>
-                      </div>
-                      <Badge
-                        className={getRecommendationColor(plan.recommendation)}
-                      >
-                        {plan.recommendation}
-                      </Badge>
-                      <div className="text-sm text-muted-foreground">
-                        {plan.date} at {plan.time}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <div className="text-sm text-muted-foreground">
-                          Fitness Score
+                <div className="space-y-3">
+                  {plans.map((plan, idx) => (
+                    <div key={plan.id} className="flex items-start gap-3 p-3 rounded-lg border border-border">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="font-semibold">{idx + 1}. {plan.trainNumber}</div>
+                            <Badge className={getRecommendationColor(plan.recommendation)}>{plan.recommendation}</Badge>
+                          </div>
+                          <div className="text-sm text-muted-foreground">{plan.time} • {plan.date}</div>
                         </div>
-                        <div className="text-2xl font-bold">
-                          {plan.fitnessScore}%
-                        </div>
-                      </div>
-                      {plan.status === "pending" && (
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="outline"
-                              onClick={() => setSelectedPlan(plan)}
-                            >
-                              <FileText className="h-4 w-4 mr-2" />
-                              Review
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                            <DialogHeader>
-                              <DialogTitle>
-                                Detailed Review - {plan.trainNumber}
-                              </DialogTitle>
-                            </DialogHeader>
 
-                            {selectedPlan && (
-                              <div className="space-y-6">
-                                {/* AI Reasoning */}
-                                <div>
-                                  <h3 className="font-semibold mb-2">
-                                    AI Analysis & Reasoning
-                                  </h3>
-                                  <p className="text-sm bg-muted p-3 rounded-lg">
-                                    {selectedPlan.aiReasoning}
-                                  </p>
-                                </div>
+                        <div className="text-sm text-muted-foreground mt-2">Fitness: <span className="font-medium">{plan.fitnessScore}%</span></div>
+                        <div className="text-sm mt-2 text-ellipsis overflow-hidden max-h-12">{plan.aiReasoning}</div>
 
-                                {/* Constraints Check */}
-                                <div>
-                                  <h3 className="font-semibold mb-3">
-                                    System Constraints Validation
-                                  </h3>
-                                  <div className="grid grid-cols-2 gap-3">
-                                    {Object.entries(
-                                      selectedPlan.constraints
-                                    ).map(([key, value]) => (
-                                      <div
-                                        key={key}
-                                        className="flex items-center gap-2"
-                                      >
-                                        {value ? (
-                                          <CheckCircle className="h-4 w-4 text-green-500" />
-                                        ) : (
-                                          <XCircle className="h-4 w-4 text-red-500" />
-                                        )}
-                                        <span className="text-sm capitalize">
-                                          {key
-                                            .replace(/([A-Z])/g, " $1")
-                                            .toLowerCase()}
-                                        </span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
+                        <div className="flex items-center gap-2 mt-3">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button size="sm" variant="ghost" onClick={() => setSelectedPlan(plan)}>
+                                Details
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Detailed Review - {plan.trainNumber}</DialogTitle>
+                              </DialogHeader>
 
-                                {/* Risk Factors */}
-                                {selectedPlan.riskFactors.length > 0 && (
+                              <div className="space-y-4">
+                                <div className="text-sm font-medium">AI Reasoning</div>
+                                <div className="text-sm bg-muted p-3 rounded">{plan.aiReasoning}</div>
+
+                                {plan.riskFactors.length > 0 && (
                                   <div>
-                                    <h3 className="font-semibold mb-2 flex items-center gap-2">
-                                      <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                                      Risk Factors
-                                    </h3>
-                                    <ul className="space-y-1">
-                                      {selectedPlan.riskFactors.map(
-                                        (risk, index) => (
-                                          <li
-                                            key={index}
-                                            className="text-sm text-yellow-700 bg-yellow-50 p-2 rounded"
-                                          >
-                                            • {risk}
-                                          </li>
-                                        )
-                                      )}
+                                    <h4 className="font-semibold">Risk Factors</h4>
+                                    <ul className="mt-2 space-y-1">
+                                      {plan.riskFactors.map((risk, i) => (
+                                        <li key={i} className="text-sm text-yellow-700">• {risk}</li>
+                                      ))}
                                     </ul>
                                   </div>
                                 )}
 
-                                {/* Review Notes */}
                                 <div>
-                                  <h3 className="font-semibold mb-2">
-                                    Review Notes
-                                  </h3>
-                                  <Textarea
-                                    placeholder="Add your review notes and reasoning..."
-                                    value={reviewNotes}
-                                    onChange={(e) =>
-                                      setReviewNotes(e.target.value)
-                                    }
-                                    className="min-h-[100px]"
-                                  />
+                                  <h4 className="font-semibold">Constraint Snapshot</h4>
+                                  <div className="grid grid-cols-2 gap-2 mt-2">
+                                    <div className="p-2 rounded bg-muted/50">Fitness: {plan.constraints.fitnessValid ? 'Valid' : 'Expired'}</div>
+                                    <div className="p-2 rounded bg-muted/50">Job Cards: {plan.constraints.jobCardsClosed ? 'Closed' : 'Open'}</div>
+                                    <div className="p-2 rounded bg-muted/50">Branding: {plan.constraints.brandingCompliant ? 'Compliant' : 'At risk'}</div>
+                                    <div className="p-2 rounded bg-muted/50">Mileage: {plan.constraints.mileageBalanced ? 'Balanced' : 'Imbalance'}</div>
+                                    <div className="p-2 rounded bg-muted/50">Cleaning: {plan.constraints.cleaningScheduled ? 'Scheduled' : 'Not scheduled'}</div>
+                                    <div className="p-2 rounded bg-muted/50">Stabling: {plan.constraints.stablingOptimal ? 'Optimal' : 'Suboptimal'}</div>
+                                  </div>
                                 </div>
 
-                                {/* Action Buttons */}
+                                <div>
+                                  <h4 className="font-semibold">Review Notes</h4>
+                                  <Textarea placeholder="Add your review notes and reasoning..." value={reviewNotes} onChange={(e) => setReviewNotes(e.target.value)} className="min-h-[100px]" />
+                                </div>
+
                                 <div className="flex gap-3 pt-4 border-t">
-                                  <Button
-                                    onClick={() =>
-                                      handleApprove(selectedPlan.id)
-                                    }
-                                    className="flex-1"
-                                  >
-                                    <CheckCircle className="h-4 w-4 mr-2" />
-                                    Approve Plan
+                                  <Button onClick={() => handleApprove(plan.id)} className="flex-1">
+                                    <CheckCircle className="h-4 w-4 mr-2" /> Approve Plan
                                   </Button>
-                                  <Button
-                                    variant="destructive"
-                                    onClick={() =>
-                                      handleReject(selectedPlan.id, reviewNotes)
-                                    }
-                                    className="flex-1"
-                                  >
-                                    <XCircle className="h-4 w-4 mr-2" />
-                                    Reject Plan
+                                  <Button variant="destructive" onClick={() => handleReject(plan.id, reviewNotes)} className="flex-1">
+                                    <XCircle className="h-4 w-4 mr-2" /> Reject Plan
                                   </Button>
                                 </div>
                               </div>
-                            )}
-                          </DialogContent>
-                        </Dialog>
-                      )}
-                    </div>
-                  </div>
+                            </DialogContent>
+                          </Dialog>
 
-                  {/* Quick Summary */}
-                  <div className="text-sm text-muted-foreground">
-                    {plan.aiReasoning.substring(0, 120)}...
-                  </div>
-
-                  {plan.riskFactors.length > 0 && (
-                    <div className="mt-2 flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                      <span className="text-sm text-yellow-700">
-                        {plan.riskFactors.length} risk factor
-                        {plan.riskFactors.length > 1 ? "s" : ""} identified
-                      </span>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="schedule" className="space-y-6">
-          {/* Tomorrow's Schedule Overview */}
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                Tomorrow's Operational Schedule -{" "}
-                {new Date(Date.now() + 86400000).toLocaleDateString()}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">18</div>
-                    <div className="text-sm text-green-700">Active Service</div>
-                  </div>
-                  <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                    <div className="text-2xl font-bold text-yellow-600">4</div>
-                    <div className="text-sm text-yellow-700">Standby</div>
-                  </div>
-                  <div className="text-center p-4 bg-red-50 rounded-lg">
-                    <div className="text-2xl font-bold text-red-600">2</div>
-                    <div className="text-sm text-red-700">Maintenance</div>
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <h4 className="font-semibold mb-3">Maintenance Windows</h4>
-                  <div className="space-y-2">
-                    {nightlyOverview.maintenanceWindows.map((window, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
-                      >
-                        <div className="flex items-center gap-3">
-                          <Badge variant="outline">{window.train}</Badge>
-                          <span className="text-sm">
-                            {window.type} Maintenance
-                          </span>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {window.window}
+                          <Button size="sm" variant="outline" onClick={() => handleReject(plan.id, 'Operator reject')}>Reject</Button>
+                          <Button size="sm" onClick={() => handleApprove(plan.id)}>Approve</Button>
                         </div>
                       </div>
-                    ))}
+
+                      <div className="w-24 text-right">
+                        <div className="text-xs text-muted-foreground">Status</div>
+                        <div className="font-semibold mt-1">{plan.status}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Constraints & Compliance</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {selectedPlan ? (
+                  <div className="space-y-2">
+                    <div className="text-sm">Train: <span className="font-medium">{selectedPlan.trainNumber}</span></div>
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      <div className="p-2 rounded bg-muted/50">Fitness Certs: {selectedPlan.constraints.fitnessValid ? 'Valid' : 'Expired'}</div>
+                      <div className="p-2 rounded bg-muted/50">Job Cards: {selectedPlan.constraints.jobCardsClosed ? 'Closed' : 'Open'}</div>
+                      <div className="p-2 rounded bg-muted/50">Branding: {selectedPlan.constraints.brandingCompliant ? 'Compliant' : 'At risk'}</div>
+                      <div className="p-2 rounded bg-muted/50">Mileage: {selectedPlan.constraints.mileageBalanced ? 'Balanced' : 'Imbalance'}</div>
+                      <div className="p-2 rounded bg-muted/50">Cleaning: {selectedPlan.constraints.cleaningScheduled ? 'Scheduled' : 'Not scheduled'}</div>
+                      <div className="p-2 rounded bg-muted/50">Stabling: {selectedPlan.constraints.stablingOptimal ? 'Optimal' : 'Suboptimal'}</div>
+                    </div>
+                    <div className="text-sm mt-3">AI Notes:</div>
+                    <div className="text-sm bg-muted p-3 rounded">{selectedPlan.aiReasoning}</div>
+                  </div>
+                ) : (
+                  <div className="text-sm text-muted-foreground">Select a plan to view constraint matrix and detailed compliance.</div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="lg:col-span-7 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Demand Prediction</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div style={{ width: '100%', height: 240 }}>
+                    <ResponsiveContainer width="100%" height={240}>
+                      <LineChart data={demandPredictionData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="time" />
+                        <YAxis />
+                        <Tooltip />
+                        <Line type="monotone" dataKey="predicted" stroke="hsl(var(--primary))" strokeWidth={2} />
+                        <Line type="monotone" dataKey="actual" stroke="hsl(var(--success))" strokeWidth={2} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Risk & Maintenance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-48">
+                    <ResponsiveContainer width="100%" height={180}>
+                      <PieChart>
+                        <Pie data={riskAssessmentData} dataKey="risk" cx="50%" cy="50%" outerRadius={60}>
+                          {riskAssessmentData.map((entry, i) => (
+                            <Cell key={i} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+
+                    <div className="mt-3 text-sm">
+                      {nightlyOverview.maintenanceWindows.map((w, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                          <div>{w.train} • {w.type}</div>
+                          <div className="text-muted-foreground">{w.window}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Simulation & What-if Console</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="p-3 rounded bg-muted/50">
+                    <div className="text-sm text-muted-foreground">Toggle constraint</div>
+                    <div className="font-medium mt-1">Ignore Branding</div>
+                  </div>
+                  <div className="p-3 rounded bg-muted/50">
+                    <div className="text-sm text-muted-foreground">Adjust objective</div>
+                    <div className="font-medium mt-1">Prioritise Service Readiness</div>
+                  </div>
+                  <div className="p-3 rounded bg-muted/50">
+                    <div className="text-sm text-muted-foreground">Run</div>
+                    <Button className="w-full mt-2">Run What-if</Button>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </Layout>
   );
 }

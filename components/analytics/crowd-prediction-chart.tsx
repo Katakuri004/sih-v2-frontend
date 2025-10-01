@@ -166,10 +166,10 @@ export function CrowdPredictionChart() {
                 <Line
                   type="monotone"
                   dataKey="predictedCrowd"
-                  stroke="hsl(var(--chart-2))"
+                  stroke="hsl(var(--warning))"
                   strokeWidth={2}
                   strokeDasharray="8 4"
-                  dot={{ fill: "hsl(var(--chart-2))", strokeWidth: 1, r: 3 }}
+                  dot={{ fill: "hsl(var(--warning))", strokeWidth: 1, r: 3 }}
                   name="AI Prediction"
                   connectNulls={false}
                 />

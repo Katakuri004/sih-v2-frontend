@@ -1,13 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { InteractiveMap, kochiMetroStations, type Station } from "@/components/metro-map/interactive-map"
+import React, { useState } from "react"
+import { InteractiveMap } from "@/components/metro-map/interactive-map-new"
 import { StationDetailTabs } from "@/components/metro-map/station-detail-tabs"
 import { Card, CardContent } from "@/components/ui/card"
 import { Map, TrendingUp } from "lucide-react"
+import { Switch } from "@/components/ui/switch"
+import { kochiMetroStations, type Station } from "@/types/metro"
 
 export default function MetroMapPage() {
   const [selectedStation, setSelectedStation] = useState<Station | null>(null)
+  const [lensEnabled, setLensEnabled] = useState(true)
 
   const handleStationClick = (station: Station) => {
     setSelectedStation(station)
@@ -16,20 +19,38 @@ export default function MetroMapPage() {
   return (
     <div className="space-y-8 p-6">
       {/* Page Header */}
-      <div className="flex items-center gap-3">
-        <div className="p-2 rounded-lg bg-primary/10">
-          <Map className="h-6 w-6 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Kochi Metro Map</h1>
-          <p className="text-muted-foreground">Interactive station monitoring and crowd analytics</p>
+      <div className="flex items-center">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Map className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Kochi Metro Map</h1>
+            <p className="text-muted-foreground">Interactive station monitoring and crowd analytics</p>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mt-8">
         {/* Interactive Map */}
-        <div className="xl:col-span-2">
-          <InteractiveMap onStationClick={handleStationClick} />
+        <div className="xl:col-span-2 space-y-4">
+          <Card className="p-0 overflow-hidden border-2">
+            <div className="relative">
+              <InteractiveMap 
+                onStationClick={handleStationClick} 
+                lensEnabled={lensEnabled}
+                stations={kochiMetroStations} 
+              />
+              <div className="absolute bottom-4 right-4 flex items-center gap-2 p-2 rounded-lg bg-background/80 backdrop-blur-sm border shadow-sm">
+                <span className="text-sm font-medium">Magnifying Lens</span>
+                <Switch
+                  checked={lensEnabled}
+                  onCheckedChange={setLensEnabled}
+                  aria-label="Toggle magnifying lens"
+                />
+              </div>
+            </div>
+          </Card>
         </div>
 
         {/* Station Details Panel */}
