@@ -1,0 +1,255 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 252 252 252;
+    --foreground: 23 23 23;
+    --card: 252 252 252;
+    --card-foreground: 23 23 23;
+    --popover: 252 252 252;
+    --popover-foreground: 82 82 82;
+    --primary: 114 227 173;
+    --primary-foreground: 30 39 35;
+    --secondary: 253 253 253;
+    --secondary-foreground: 23 23 23;
+    --muted: 237 237 237;
+    --muted-foreground: 32 32 32;
+    --accent: 237 237 237;
+    --accent-foreground: 32 32 32;
+    --destructive: 202 50 20;
+    --destructive-foreground: 255 252 252;
+    --border: 223 223 223;
+    --input: 246 246 246;
+    --ring: 114 227 173;
+    --chart-1: 114 227 173;
+    --chart-2: 59 130 246;
+    --chart-3: 139 92 246;
+    --chart-4: 245 158 11;
+    --chart-5: 16 185 129;
+    --radius: 0.5rem;
+    --sidebar: 252 252 252;
+    --sidebar-foreground: 112 112 112;
+    --sidebar-primary: 114 227 173;
+    --sidebar-primary-foreground: 30 39 35;
+    --sidebar-accent: 237 237 237;
+    --sidebar-accent-foreground: 32 32 32;
+    --sidebar-border: 223 223 223;
+    --sidebar-ring: 114 227 173;
+
+    /* Metro-specific color variables */
+    --metro-blue: 217 91% 60%;
+    --metro-purple: 262 83% 58%;
+    --metro-teal: 198 93% 60%;
+    --metro-green: 142 76% 36%;
+    --metro-orange: 25 95% 53%;
+    --metro-red: 0 84% 60%;
+    --metro-yellow: 47 96% 89%;
+    --success: 142 76% 36%;
+    --warning: 25 95% 53%;
+    --info: 198 93% 60%;
+
+    --font-sans: Plus Jakarta Sans, sans-serif;
+    --font-serif: Source Serif 4, serif;
+    --font-mono: JetBrains Mono, monospace;
+    --shadow-color: oklch(0 0 0);
+    --shadow-opacity: 0.1;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-offset-x: 0;
+    --shadow-offset-y: 1px;
+    --letter-spacing: 0em;
+    --spacing: 0.25rem;
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+      0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+      0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+      0 2px 4px -1px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+      0 4px 6px -1px hsl(0 0% 0% / 0.1);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+      0 8px 10px -1px hsl(0 0% 0% / 0.1);
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --tracking-normal: 0em;
+  }
+
+  .dark {
+    --background: 17 18 21;
+    --foreground: 231 235 239;
+    --card: 26 27 30;
+    --card-foreground: 231 235 239;
+    --popover: 26 27 30;
+    --popover-foreground: 231 235 239;
+    --primary: 52 168 90;
+    --primary-foreground: 231 235 239;
+    --secondary: 70 130 180;
+    --secondary-foreground: 231 235 239;
+    --muted: 39 41 45;
+    --muted-foreground: 157 164 174;
+    --accent: 52 168 90;
+    --accent-foreground: 231 235 239;
+    --destructive: 239 68 68;
+    --destructive-foreground: 231 235 239;
+    --border: 39 41 45;
+    --input: 39 41 45;
+    --ring: 52 168 90;
+    --chart-1: 52 168 90;
+    --chart-2: 70 130 180;
+    --chart-3: 90 155 213;
+    --chart-4: 127 181 224;
+    --chart-5: 52 168 90;
+    --sidebar: 26 27 30;
+    --sidebar-foreground: 231 235 239;
+    --sidebar-primary: 52 168 90;
+    --sidebar-primary-foreground: 231 235 239;
+    --sidebar-accent: 70 130 180;
+    --sidebar-accent-foreground: 231 235 239;
+    --sidebar-border: 39 41 45;
+    --sidebar-ring: 52 168 90;
+
+    /* Added metro-specific color variables for train health status */
+    --metro-blue: 217 91% 60%;
+    --metro-purple: 262 83% 58%;
+    --metro-teal: 198 93% 60%;
+    --metro-green: 142 76% 36%;
+    --metro-orange: 25 95% 53%;
+    --metro-red: 0 84% 60%;
+    --metro-yellow: 47 96% 89%;
+    --success: 142 76% 36%;
+    --warning: 25 95% 53%;
+    --info: 198 93% 60%;
+    --radius: 0.5rem;
+    --font-sans: Plus Jakarta Sans, sans-serif;
+    --font-serif: Source Serif 4, serif;
+    --font-mono: JetBrains Mono, monospace;
+    --shadow-color: oklch(0 0 0);
+    --shadow-opacity: 0.1;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-offset-x: 0;
+    --shadow-offset-y: 1px;
+    --letter-spacing: 0em;
+    --spacing: 0.25rem;
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+      0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+      0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+      0 2px 4px -1px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+      0 4px 6px -1px hsl(0 0% 0% / 0.1);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
+      0 8px 10px -1px hsl(0 0% 0% / 0.1);
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+  }
+  .theme {
+    --font-sans: Plus Jakarta Sans, sans-serif;
+    --font-mono: JetBrains Mono, monospace;
+    --font-serif: Source Serif 4, serif;
+    --radius: 0.5rem;
+    --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
+    --tracking-tight: calc(var(--tracking-normal) - 0.025em);
+    --tracking-wide: calc(var(--tracking-normal) + 0.025em);
+    --tracking-wider: calc(var(--tracking-normal) + 0.05em);
+    --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+  }
+  body {
+    letter-spacing: var(--tracking-normal);
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+  }
+}
+
+/* Custom animations */
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-count-up {
+  animation: countUp 0.6s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideInFromBottom 0.5s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Added train health matrix styles */
+.train-health-cell {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.125rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.train-health-cell:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.train-health-cell.excellent {
+  background-color: var(--primary);
+}
+
+.train-health-cell.good {
+  background-color: var(--secondary);
+}
+
+.train-health-cell.warning {
+  background-color: rgb(234, 179, 8);
+}
+
+.train-health-cell.critical {
+  background-color: var(--destructive);
+}
+
+.train-health-cell.maintenance {
+  background-color: var(--muted);
+}
