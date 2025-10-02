@@ -87,9 +87,7 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
           const criticalResources = [];
 
           // Add CSS resources (these are more likely to exist)
-          criticalResources.push(
-            "/_next/static/css/app/globals.css"
-          );
+          criticalResources.push("/_next/static/css/app/globals.css");
 
           // Page-specific resources
           if (page.path === "/fleet-shadow") {
@@ -103,7 +101,7 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
           criticalResources.forEach((resource) => {
             try {
               const resourceLink = document.createElement("link");
-              
+
               // Use different strategies based on resource type
               if (resource.includes("spline.design")) {
                 resourceLink.rel = "preconnect";
@@ -115,15 +113,18 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
                 resourceLink.rel = "prefetch";
                 resourceLink.href = resource;
               }
-              
+
               // Add error handling
               resourceLink.onerror = () => {
                 console.warn(`Failed to preload resource: ${resource}`);
               };
-              
+
               document.head.appendChild(resourceLink);
             } catch (error) {
-              console.warn(`Failed to create preload link for: ${resource}`, error);
+              console.warn(
+                `Failed to create preload link for: ${resource}`,
+                error
+              );
             }
           });
 
@@ -157,13 +158,13 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
   useEffect(() => {
     // Add debugging
     console.log("🔄 SplineLoader useEffect triggered");
-    
+
     // Check if we've already compiled in this session
     const sessionCompiled = sessionStorage.getItem(
       "metro-mind-session-compiled"
     );
     console.log("Session compiled flag:", sessionCompiled);
-    
+
     if (sessionCompiled === "true") {
       // Already compiled in this session, skip loading screen
       console.log("✅ Session already compiled, skipping loader");
@@ -381,21 +382,18 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
                     setSplineLoaded(true);
                   }}
                   onError={(error) => {
-                    console.warn("⚠️ Spline scene failed to load, using fallback:", error);
+                    console.warn(
+                      "⚠️ Spline scene failed to load, using fallback:",
+                      error
+                    );
                     // Continue loading even if Spline fails
                     setSplineLoaded(true);
                   }}
                 />
               </div>
-              
-              {/* Fallback loading indicator if Spline fails */}
-              {!splineLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto"></div>
-                  </div>
-                </div>
-              )}
+
+              {/* Fallback indicator if Spline fails - now empty */}
+              {!splineLoaded && <div className="absolute inset-0"></div>}
             </div>
           </motion.div>
         )}

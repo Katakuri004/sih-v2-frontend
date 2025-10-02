@@ -736,17 +736,20 @@ export function formatDate(dateString: string | Date): string {
 **Fixed Reload, Preload, and Compilation Functionality:**
 
 - **Enhanced Resource Preloading**: Fixed Next.js 15 compatibility issues with resource paths
+
   - Replaced hardcoded static paths with dynamic resource detection
   - Added `preconnect` strategy for Spline domain instead of direct file preloading
   - Implemented proper error handling for failed resource loads
 
-- **Improved Compilation System**: 
+- **Improved Compilation System**:
+
   - Added comprehensive debugging and logging throughout the compilation process
   - Enhanced error handling with try-catch blocks around compilation startup
   - Fixed cleanup logic to use proper function references instead of intervals
   - Added fallback mechanisms for compilation failures
 
 - **Better Spline Integration**:
+
   - Added fallback loading indicator when Spline scene fails to load
   - Improved error handling with warning messages instead of errors
   - Enhanced visual feedback with custom loading spinner and text
@@ -763,7 +766,7 @@ export function formatDate(dateString: string | Date): string {
 criticalResources.forEach((resource) => {
   try {
     const resourceLink = document.createElement("link");
-    
+
     if (resource.includes("spline.design")) {
       resourceLink.rel = "preconnect";
       resourceLink.href = "https://prod.spline.design";
@@ -774,11 +777,11 @@ criticalResources.forEach((resource) => {
       resourceLink.rel = "prefetch";
       resourceLink.href = resource;
     }
-    
+
     resourceLink.onerror = () => {
       console.warn(`Failed to preload resource: ${resource}`);
     };
-    
+
     document.head.appendChild(resourceLink);
   } catch (error) {
     console.warn(`Failed to create preload link for: ${resource}`, error);
