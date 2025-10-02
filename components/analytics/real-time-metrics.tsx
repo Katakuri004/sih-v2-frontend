@@ -93,6 +93,12 @@ export function RealTimeMetrics() {
     return "destructive";
   };
 
+  const getSystemLoadColor = (load: number) => {
+    if (load < 70) return "bg-green-500"; // Low load - green
+    if (load < 85) return "bg-yellow-500"; // Medium load - yellow
+    return "bg-red-500"; // High load - red
+  };
+
   return (
     <div className="space-y-6">
       {/* Live Status Header */}
@@ -156,7 +162,16 @@ export function RealTimeMetrics() {
                 <div className="text-sm text-muted-foreground mb-2">
                   System Load
                 </div>
-                <Progress value={currentMetrics?.systemLoad} className="h-2" />
+                <div className="relative">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 border border-gray-300 dark:border-gray-600">
+                    <div
+                      className={`h-2 rounded-full transition-all duration-300 ${getSystemLoadColor(
+                        currentMetrics?.systemLoad || 0
+                      )}`}
+                      style={{ width: `${currentMetrics?.systemLoad || 0}%` }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>

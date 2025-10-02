@@ -477,8 +477,8 @@ export default function BrandingMonitorPage() {
                           className={`flex items-center justify-between p-2 rounded ${
                             isAtRisk
                               ? pct < 80
-                                ? "bg-red-50"
-                                : "bg-yellow-50"
+                                ? "bg-red-50 text-red-900 dark:bg-red-900/30 dark:text-red-100"
+                                : "bg-orange-50 text-orange-900 dark:bg-orange-900/30 dark:text-orange-100"
                               : ""
                           }`}
                         >

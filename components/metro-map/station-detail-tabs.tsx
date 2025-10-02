@@ -230,18 +230,22 @@ export function StationDetailTabs({ station }: StationDetailTabsProps) {
                   </div>
                   <div className="text-sm text-muted-foreground">people</div>
                 </div>
-                <Progress
-                  value={crowdData.percentage}
-                  className={`w-full h-2 ${
-                    station.crowdLevel === "low"
-                      ? "[&>div]:bg-green-500"
-                      : station.crowdLevel === "medium"
-                      ? "[&>div]:bg-yellow-500"
-                      : station.crowdLevel === "high"
-                      ? "[&>div]:bg-red-500"
-                      : "[&>div]:bg-primary"
-                  }`}
-                />
+                <div className="relative">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 border border-gray-300 dark:border-gray-600">
+                    <div
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        station.crowdLevel === "low"
+                          ? "bg-green-500"
+                          : station.crowdLevel === "medium"
+                          ? "bg-yellow-500"
+                          : station.crowdLevel === "high"
+                          ? "bg-red-500"
+                          : "bg-primary"
+                      }`}
+                      style={{ width: `${crowdData.percentage}%` }}
+                    />
+                  </div>
+                </div>
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>{crowdData.percentage}% capacity</span>
                   <span>{crowdData.capacity} max</span>

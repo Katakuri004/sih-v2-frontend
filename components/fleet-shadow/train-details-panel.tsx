@@ -92,7 +92,14 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
                 <span>Overall Health</span>
                 <span className="font-medium">{train.healthScore}%</span>
               </div>
-              <Progress value={train.healthScore} className="h-2" />
+              <div className="relative">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 border border-gray-300 dark:border-gray-600">
+                  <div
+                    className="h-2 rounded-full transition-all duration-300 bg-green-500"
+                    style={{ width: `${train.healthScore}%` }}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Key Stats */}
@@ -125,9 +132,9 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
                   { name: "Battery Systems", health: 90 },
                 ].map((component) => {
                   const getHealthColor = (health: number) => {
-                    if (health >= 80) return "[&>div]:bg-green-500";
-                    if (health >= 70) return "[&>div]:bg-yellow-500";
-                    return "[&>div]:bg-red-500";
+                    if (health >= 80) return "bg-green-500";
+                    if (health >= 70) return "bg-yellow-500";
+                    return "bg-red-500";
                   };
 
                   return (
@@ -136,10 +143,16 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
                         <span>{component.name}</span>
                         <span className="font-medium">{component.health}%</span>
                       </div>
-                      <Progress
-                        value={component.health}
-                        className={`h-1.5 ${getHealthColor(component.health)}`}
-                      />
+                      <div className="relative">
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 border border-gray-300 dark:border-gray-600">
+                          <div
+                            className={`h-1.5 rounded-full transition-all duration-300 ${getHealthColor(
+                              component.health
+                            )}`}
+                            style={{ width: `${component.health}%` }}
+                          />
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
