@@ -83,74 +83,48 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
           link.href = page.path;
           document.head.appendChild(link);
 
-          // Also preload critical resources for each page
+          // Also preload critical resources for each page using Next.js 15 patterns
           const criticalResources = [];
 
-          if (page.path === "/") {
-            criticalResources.push(
-              "/_next/static/chunks/pages/index.js",
-              "/_next/static/css/dashboard.css"
-            );
-          }
+          // Add CSS resources (these are more likely to exist)
+          criticalResources.push(
+            "/_next/static/css/app/globals.css"
+          );
 
-          if (page.path === "/metro-map") {
-            criticalResources.push(
-              "/_next/static/chunks/pages/metro-map.js",
-              "/_next/static/css/metro-map.css"
-            );
-          }
-
+          // Page-specific resources
           if (page.path === "/fleet-shadow") {
+            // Only preload Spline for fleet-shadow page
             criticalResources.push(
-              "https://prod.spline.design/LWkULIRVw5jp23zy/scene.splinecode",
-              "/_next/static/chunks/pages/fleet-shadow.js",
-              "/_next/static/css/fleet-shadow.css"
+              "https://prod.spline.design/LWkULIRVw5jp23zy/scene.splinecode"
             );
           }
 
-          if (page.path === "/analytics") {
-            criticalResources.push(
-              "/_next/static/chunks/pages/analytics.js",
-              "/_next/static/css/analytics.css"
-            );
-          }
-
-          if (page.path === "/maintenance") {
-            criticalResources.push(
-              "/_next/static/chunks/pages/maintenance.js",
-              "/_next/static/css/maintenance.css"
-            );
-          }
-
-          if (page.path === "/induction-review") {
-            criticalResources.push(
-              "/_next/static/chunks/pages/induction-review.js",
-              "/_next/static/css/induction-review.css"
-            );
-          }
-
-          if (page.path === "/branding-monitor") {
-            criticalResources.push(
-              "/_next/static/chunks/pages/branding-monitor.js",
-              "/_next/static/css/branding-monitor.css"
-            );
-          }
-
-          if (page.path === "/reports") {
-            criticalResources.push(
-              "/_next/static/chunks/pages/reports.js",
-              "/_next/static/css/reports.css"
-            );
-          }
-
-          // Preload critical resources
+          // Preload critical resources with better error handling
           criticalResources.forEach((resource) => {
-            const resourceLink = document.createElement("link");
-            resourceLink.rel = resource.endsWith(".js")
-              ? "modulepreload"
-              : "prefetch";
-            resourceLink.href = resource;
-            document.head.appendChild(resourceLink);
+            try {
+              const resourceLink = document.createElement("link");
+              
+              // Use different strategies based on resource type
+              if (resource.includes("spline.design")) {
+                resourceLink.rel = "preconnect";
+                resourceLink.href = "https://prod.spline.design";
+              } else if (resource.endsWith(".js")) {
+                resourceLink.rel = "modulepreload";
+                resourceLink.href = resource;
+              } else {
+                resourceLink.rel = "prefetch";
+                resourceLink.href = resource;
+              }
+              
+              // Add error handling
+              resourceLink.onerror = () => {
+                console.warn(`Failed to preload resource: ${resource}`);
+              };
+              
+              document.head.appendChild(resourceLink);
+            } catch (error) {
+              console.warn(`Failed to create preload link for: ${resource}`, error);
+            }
           });
 
           // Simulate processing time for each page
@@ -181,12 +155,18 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
   };
 
   useEffect(() => {
+    // Add debugging
+    console.log("🔄 SplineLoader useEffect triggered");
+    
     // Check if we've already compiled in this session
     const sessionCompiled = sessionStorage.getItem(
       "metro-mind-session-compiled"
     );
+    console.log("Session compiled flag:", sessionCompiled);
+    
     if (sessionCompiled === "true") {
       // Already compiled in this session, skip loading screen
+      console.log("✅ Session already compiled, skipping loader");
       setIsLoading(false);
       return;
     }
@@ -237,17 +217,24 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
       loadingTime = 3000; // 3 seconds for regular refresh
     }
 
-    console.log(`Loading type: ${loadingType}, Duration: ${loadingTime}ms`);
+    console.log(`🎯 Loading type: ${loadingType}, Duration: ${loadingTime}ms`);
 
     // Start compilation immediately for ALL loads (initial, refresh, force)
-    let compilationInterval: NodeJS.Timeout | null = null;
-    compilationInterval = startBackgroundCompilation(true);
+    let compilationCleanup: (() => void) | null = null;
+    try {
+      compilationCleanup = startBackgroundCompilation(true);
+      console.log("✅ Background compilation started successfully");
+    } catch (error) {
+      console.error("❌ Failed to start background compilation:", error);
+    }
 
     // Set loading timer
     const timer = setTimeout(() => {
+      console.log("⏰ Loading timer completed, hiding loading screen");
       setIsLoading(false);
       // Mark that we've compiled in this session
       sessionStorage.setItem("metro-mind-session-compiled", "true");
+      console.log("✅ Session marked as compiled");
     }, loadingTime);
 
     // Clear session flag on page unload (refresh/close)
@@ -259,9 +246,10 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
 
     // Clean up timer and compilation if component unmounts
     return () => {
+      console.log("🧹 Cleaning up SplineLoader effects");
       clearTimeout(timer);
-      if (compilationInterval) {
-        clearInterval(compilationInterval);
+      if (compilationCleanup) {
+        compilationCleanup();
       }
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
@@ -389,16 +377,27 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
                   scene="https://prod.spline.design/LWkULIRVw5jp23zy/scene.splinecode"
                   style={{ width: "100%", height: "100%" }}
                   onLoad={() => {
-                    console.log("Spline scene loaded successfully");
+                    console.log("✅ Spline scene loaded successfully");
                     setSplineLoaded(true);
                   }}
                   onError={(error) => {
-                    console.error("Spline scene failed to load:", error);
+                    console.warn("⚠️ Spline scene failed to load, using fallback:", error);
                     // Continue loading even if Spline fails
                     setSplineLoaded(true);
                   }}
                 />
               </div>
+              
+              {/* Fallback loading indicator if Spline fails */}
+              {!splineLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-lg font-semibold text-foreground">Loading MetroMind AI...</p>
+                    <p className="text-sm text-muted-foreground mt-2">Preparing your experience</p>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
