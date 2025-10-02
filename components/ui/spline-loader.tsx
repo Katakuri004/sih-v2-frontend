@@ -392,9 +392,7 @@ export default function SplineLoader({ children }: SplineLoaderProps) {
               {!splineLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-lg font-semibold text-foreground">Loading MetroMind AI...</p>
-                    <p className="text-sm text-muted-foreground mt-2">Preparing your experience</p>
+                    <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto"></div>
                   </div>
                 </div>
               )}
