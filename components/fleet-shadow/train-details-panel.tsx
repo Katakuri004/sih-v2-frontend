@@ -99,7 +99,9 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
             <div className="grid grid-cols-2 gap-4">
               <Card className="p-4">
                 <div className="text-2xl font-bold">
-                  {typeof train.totalKm === 'number' ? (train.totalKm / 1000).toFixed(1) + 'k' : '—'}
+                  {typeof train.totalKm === "number"
+                    ? (train.totalKm / 1000).toFixed(1) + "k"
+                    : "—"}
                 </div>
                 <div className="text-sm text-muted-foreground">Total KM</div>
               </Card>
@@ -117,19 +119,30 @@ export function TrainDetailsPanel({ train, scenario }: TrainDetailsPanelProps) {
               <div className="space-y-3">
                 {[
                   { name: "Traction Motors", health: 95 },
-                  { name: "Brake System", health: 88 },
+                  { name: "Brake System", health: 72 },
                   { name: "Door Mechanisms", health: 92 },
-                  { name: "HVAC System", health: 85 },
+                  { name: "HVAC System", health: 65 },
                   { name: "Battery Systems", health: 90 },
-                ].map((component) => (
-                  <div key={component.name} className="space-y-1">
-                    <div className="flex justify-between text-sm">
-                      <span>{component.name}</span>
-                      <span className="font-medium">{component.health}%</span>
+                ].map((component) => {
+                  const getHealthColor = (health: number) => {
+                    if (health >= 80) return "[&>div]:bg-green-500";
+                    if (health >= 70) return "[&>div]:bg-yellow-500";
+                    return "[&>div]:bg-red-500";
+                  };
+
+                  return (
+                    <div key={component.name} className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span>{component.name}</span>
+                        <span className="font-medium">{component.health}%</span>
+                      </div>
+                      <Progress
+                        value={component.health}
+                        className={`h-1.5 ${getHealthColor(component.health)}`}
+                      />
                     </div>
-                    <Progress value={component.health} className="h-1.5" />
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>

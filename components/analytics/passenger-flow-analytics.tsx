@@ -1,110 +1,130 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts"
-import { TrendingUp, Clock, Calendar, CalendarDays } from "lucide-react"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from "recharts";
+import { TrendingUp, Clock, Calendar, CalendarDays } from "lucide-react";
 
 // Generate mock data for different time periods
-type FlowPoint = { time: string; passengers: number; inbound: number; outbound: number }
+type FlowPoint = {
+  time: string;
+  passengers: number;
+  inbound: number;
+  outbound: number;
+};
 const generate30MinData = (): FlowPoint[] => {
-  const data: FlowPoint[] = []
-  const now = new Date()
+  const data: FlowPoint[] = [];
+  const now = new Date();
   for (let i = 29; i >= 0; i--) {
-    const time = new Date(now.getTime() - i * 60000)
+    const time = new Date(now.getTime() - i * 60000);
     data.push({
       time: time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       passengers: Math.floor(Math.random() * 500) + 200,
       inbound: Math.floor(Math.random() * 250) + 100,
       outbound: Math.floor(Math.random() * 250) + 100,
-    })
+    });
   }
-  return data
-}
+  return data;
+};
 
 const generate24HourData = (): FlowPoint[] => {
-  const data: FlowPoint[] = []
+  const data: FlowPoint[] = [];
   for (let i = 0; i < 24; i++) {
-    const hour = i.toString().padStart(2, "0") + ":00"
-    const basePassengers = i < 6 || i > 22 ? 100 : (i >= 7 && i <= 9) || (i >= 17 && i <= 19) ? 800 : 400
+    const hour = i.toString().padStart(2, "0") + ":00";
+    const basePassengers =
+      i < 6 || i > 22
+        ? 100
+        : (i >= 7 && i <= 9) || (i >= 17 && i <= 19)
+        ? 800
+        : 400;
     data.push({
       time: hour,
       passengers: basePassengers + Math.floor(Math.random() * 200),
       inbound: Math.floor((basePassengers + Math.random() * 200) * 0.6),
       outbound: Math.floor((basePassengers + Math.random() * 200) * 0.4),
-    })
+    });
   }
-  return data
-}
+  return data;
+};
 
 const generate7DayData = (): FlowPoint[] => {
-  const data: FlowPoint[] = []
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  const data: FlowPoint[] = [];
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   days.forEach((day, index) => {
-    const isWeekend = index >= 5
-    const basePassengers = isWeekend ? 15000 : 25000
+    const isWeekend = index >= 5;
+    const basePassengers = isWeekend ? 15000 : 25000;
     data.push({
       time: day,
       passengers: basePassengers + Math.floor(Math.random() * 5000),
       inbound: Math.floor((basePassengers + Math.random() * 5000) * 0.55),
       outbound: Math.floor((basePassengers + Math.random() * 5000) * 0.45),
-    })
-  })
-  return data
-}
+    });
+  });
+  return data;
+};
 
 export function PassengerFlowAnalytics() {
-  const [activeTab, setActiveTab] = useState("30min")
+  const [activeTab, setActiveTab] = useState("30min");
 
-  const data30Min = generate30MinData()
-  const data24Hour = generate24HourData()
-  const data7Day = generate7DayData()
+  const data30Min = generate30MinData();
+  const data24Hour = generate24HourData();
+  const data7Day = generate7DayData();
 
   const getDataForTab = (tab: string) => {
     switch (tab) {
       case "30min":
-        return data30Min
+        return data30Min;
       case "24hour":
-        return data24Hour
+        return data24Hour;
       case "7day":
-        return data7Day
+        return data7Day;
       default:
-        return data30Min
+        return data30Min;
     }
-  }
+  };
 
   const getCurrentTotal = (tab: string) => {
-    const data = getDataForTab(tab)
-    const latest = data[data.length - 1]
-    return latest?.passengers || 0
-  }
+    const data = getDataForTab(tab);
+    const latest = data[data.length - 1];
+    return latest?.passengers || 0;
+  };
 
   const getTimeLabel = (tab: string) => {
     switch (tab) {
       case "30min":
-        return "Last 30 Minutes"
+        return "Last 30 Minutes";
       case "24hour":
-        return "Last 24 Hours"
+        return "Last 24 Hours";
       case "7day":
-        return "Last 7 Days"
+        return "Last 7 Days";
       default:
-        return "Real-time"
+        return "Real-time";
     }
-  }
+  };
 
   const getIcon = (tab: string) => {
     switch (tab) {
       case "30min":
-        return Clock
+        return Clock;
       case "24hour":
-        return Calendar
+        return Calendar;
       case "7day":
-        return CalendarDays
+        return CalendarDays;
       default:
-        return TrendingUp
+        return TrendingUp;
     }
-  }
+  };
 
   return (
     <Card>
@@ -115,7 +135,11 @@ export function PassengerFlowAnalytics() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="30min" className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
@@ -133,27 +157,35 @@ export function PassengerFlowAnalytics() {
           <TabsContent value="30min" className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold">Real-time Flow - Last 30 Minutes</h3>
-                <p className="text-sm text-muted-foreground">Live passenger movement data updated every minute</p>
+                <h3 className="text-lg font-semibold">
+                  Real-time Flow - Last 30 Minutes
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Live passenger movement data updated every minute
+                </p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold">{getCurrentTotal("30min").toLocaleString()}</div>
-                <div className="text-sm text-muted-foreground">Current passengers</div>
+                <div className="text-2xl font-bold">
+                  {getCurrentTotal("30min").toLocaleString()}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Current passengers
+                </div>
               </div>
             </div>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data30Min}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" />
-                  <YAxis />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#9ca3af" />
+                  <XAxis dataKey="time" tick={{ fill: "#374151" }} />
+                  <YAxis tick={{ fill: "#374151" }} />
                   <Tooltip />
                   <Area
                     type="monotone"
                     dataKey="inbound"
                     stackId="1"
-                    stroke="hsl(var(--primary))"
-                    fill="hsl(var(--primary))"
+                    stroke="#2563eb"
+                    fill="#2563eb"
                     fillOpacity={0.6}
                     name="Inbound"
                   />
@@ -161,8 +193,8 @@ export function PassengerFlowAnalytics() {
                     type="monotone"
                     dataKey="outbound"
                     stackId="1"
-                    stroke="hsl(var(--chart-2))"
-                    fill="hsl(var(--chart-2))"
+                    stroke="#f59e0b"
+                    fill="#f59e0b"
                     fillOpacity={0.6}
                     name="Outbound"
                   />
@@ -174,33 +206,39 @@ export function PassengerFlowAnalytics() {
           <TabsContent value="24hour" className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold">Daily Pattern - Last 24 Hours</h3>
-                <p className="text-sm text-muted-foreground">Hourly passenger flow showing peak and off-peak periods</p>
+                <h3 className="text-lg font-semibold">
+                  Daily Pattern - Last 24 Hours
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Hourly passenger flow showing peak and off-peak periods
+                </p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold">{getCurrentTotal("24hour").toLocaleString()}</div>
+                <div className="text-2xl font-bold">
+                  {getCurrentTotal("24hour").toLocaleString()}
+                </div>
                 <div className="text-sm text-muted-foreground">Total today</div>
               </div>
             </div>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data24Hour}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" />
-                  <YAxis />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#9ca3af" />
+                  <XAxis dataKey="time" tick={{ fill: "#374151" }} />
+                  <YAxis tick={{ fill: "#374151" }} />
                   <Tooltip />
                   <Line
                     type="monotone"
                     dataKey="passengers"
-                    stroke="hsl(var(--primary))"
+                    stroke="#2563eb"
                     strokeWidth={3}
-                    dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
+                    dot={{ fill: "#2563eb", strokeWidth: 2, r: 4 }}
                     name="Total Passengers"
                   />
                   <Line
                     type="monotone"
                     dataKey="inbound"
-                    stroke="hsl(var(--chart-3))"
+                    stroke="#10b981"
                     strokeWidth={2}
                     strokeDasharray="5 5"
                     dot={false}
@@ -209,7 +247,7 @@ export function PassengerFlowAnalytics() {
                   <Line
                     type="monotone"
                     dataKey="outbound"
-                    stroke="hsl(var(--chart-2))"
+                    stroke="#f59e0b"
                     strokeWidth={2}
                     strokeDasharray="5 5"
                     dot={false}
@@ -223,28 +261,34 @@ export function PassengerFlowAnalytics() {
           <TabsContent value="7day" className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold">Weekly Trends - Last 7 Days</h3>
+                <h3 className="text-lg font-semibold">
+                  Weekly Trends - Last 7 Days
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   Daily passenger totals showing weekday vs weekend patterns
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold">{(getCurrentTotal("7day") * 7).toLocaleString()}</div>
-                <div className="text-sm text-muted-foreground">Weekly total</div>
+                <div className="text-2xl font-bold">
+                  {(getCurrentTotal("7day") * 7).toLocaleString()}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Weekly total
+                </div>
               </div>
             </div>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data7Day}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" />
-                  <YAxis />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#9ca3af" />
+                  <XAxis dataKey="time" tick={{ fill: "#374151" }} />
+                  <YAxis tick={{ fill: "#374151" }} />
                   <Tooltip />
                   <Area
                     type="monotone"
                     dataKey="passengers"
-                    stroke="hsl(var(--primary))"
-                    fill="hsl(var(--primary))"
+                    stroke="#2563eb"
+                    fill="#2563eb"
                     fillOpacity={0.3}
                     strokeWidth={3}
                     name="Total Passengers"
@@ -256,5 +300,5 @@ export function PassengerFlowAnalytics() {
         </Tabs>
       </CardContent>
     </Card>
-  )
+  );
 }
