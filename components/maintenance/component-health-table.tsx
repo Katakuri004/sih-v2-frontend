@@ -1,19 +1,27 @@
-"use client"
+"use client";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { useEffect, useState } from "react"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
+import { formatDate } from "@/lib/utils";
 
 interface ComponentData {
-  id: string
-  componentName: string
-  trainNumber: string
-  healthScore: number
-  lastMaintenance: string
-  nextMaintenance: string
-  status: "Good" | "Warning" | "Critical"
-  predictedFailure: string
+  id: string;
+  componentName: string;
+  trainNumber: string;
+  healthScore: number;
+  lastMaintenance: string;
+  nextMaintenance: string;
+  status: "Good" | "Warning" | "Critical";
+  predictedFailure: string;
 }
 
 const mockComponentData: ComponentData[] = [
@@ -67,44 +75,49 @@ const mockComponentData: ComponentData[] = [
     status: "Warning",
     predictedFailure: "6 weeks",
   },
-]
+];
 
 export function ComponentHealthTable() {
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 200)
-    return () => clearTimeout(timer)
-  }, [])
+    const timer = setTimeout(() => setIsVisible(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
 
   const getHealthColor = (score: number) => {
-    if (score > 50) return "text-chart-1"
-    if (score > 20) return "text-secondary"
-    return "text-destructive"
-  }
+    if (score > 50) return "text-chart-1";
+    if (score > 20) return "text-secondary";
+    return "text-destructive";
+  };
 
   const getProgressColor = (score: number) => {
-    if (score > 50) return "bg-chart-1"
-    if (score > 20) return "bg-secondary"
-    return "bg-destructive"
-  }
+    if (score >= 80) return "bg-green-500";
+    if (score >= 70) return "bg-blue-500";
+    if (score >= 40) return "bg-yellow-500";
+    return "bg-red-500";
+  };
 
   const getStatusBadge = (status: ComponentData["status"]) => {
     const variants = {
       Good: "default",
       Warning: "secondary",
       Critical: "destructive",
-    } as const
+    } as const;
 
     return (
       <Badge variant={variants[status]} className="font-medium">
         {status}
       </Badge>
-    )
-  }
+    );
+  };
 
   return (
-    <div className={`transition-all duration-500 ${isVisible ? "animate-fade-in" : "opacity-0"}`}>
+    <div
+      className={`transition-all duration-500 ${
+        isVisible ? "animate-fade-in" : "opacity-0"
+      }`}
+    >
       <Table>
         <TableHeader>
           <TableRow>
@@ -121,33 +134,46 @@ export function ComponentHealthTable() {
           {mockComponentData.map((component, index) => (
             <TableRow
               key={component.id}
-              className={`transition-all duration-300 hover:bg-muted/50 ${isVisible ? "animate-slide-in" : "opacity-0"}`}
+              className={`transition-all duration-300 hover:bg-muted/50 border-b border-gray-300 dark:border-gray-600 ${
+                isVisible ? "animate-slide-in" : "opacity-0"
+              }`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <TableCell className="font-medium">{component.componentName}</TableCell>
+              <TableCell className="font-medium">
+                {component.componentName}
+              </TableCell>
               <TableCell>{component.trainNumber}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <Progress
-                    value={component.healthScore}
-                    className="w-20 h-2"
-                    style={{
-                      background: "rgb(var(--muted))",
-                    }}
-                  />
-                  <span className={`text-sm font-medium ${getHealthColor(component.healthScore)}`}>
+                  <div className="relative w-20">
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 border border-gray-300 dark:border-gray-600">
+                      <div
+                        className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(
+                          component.healthScore
+                        )}`}
+                        style={{ width: `${component.healthScore}%` }}
+                      />
+                    </div>
+                  </div>
+                  <span
+                    className={`text-sm font-medium ${getHealthColor(
+                      component.healthScore
+                    )}`}
+                  >
                     {component.healthScore}%
                   </span>
                 </div>
               </TableCell>
               <TableCell>{getStatusBadge(component.status)}</TableCell>
-              <TableCell>{component.lastMaintenance}</TableCell>
-              <TableCell>{component.nextMaintenance}</TableCell>
-              <TableCell className="text-muted-foreground">{component.predictedFailure}</TableCell>
+              <TableCell>{formatDate(component.lastMaintenance)}</TableCell>
+              <TableCell>{formatDate(component.nextMaintenance)}</TableCell>
+              <TableCell className="text-muted-foreground">
+                {component.predictedFailure}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

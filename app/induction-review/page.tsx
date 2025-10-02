@@ -6,9 +6,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { CheckCircle, XCircle, AlertTriangle, User } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
 interface InductionPlan {
   id: string;
@@ -38,7 +55,8 @@ const mockInductionPlans: InductionPlan[] = [
     time: "05:30",
     recommendation: "Service",
     fitnessScore: 94,
-    aiReasoning: "All systems optimal. Fitness certificates valid for 72 hours. No pending job cards. Branding exposure within SLA limits.",
+    aiReasoning:
+      "All systems optimal. Fitness certificates valid for 72 hours. No pending job cards. Branding exposure within SLA limits.",
     constraints: {
       fitnessValid: true,
       jobCardsClosed: true,
@@ -57,7 +75,8 @@ const mockInductionPlans: InductionPlan[] = [
     time: "06:00",
     recommendation: "Maintenance",
     fitnessScore: 67,
-    aiReasoning: "Brake system showing degraded performance. Telecom clearance expires in 18 hours. Preventive maintenance recommended.",
+    aiReasoning:
+      "Brake system showing degraded performance. Telecom clearance expires in 18 hours. Preventive maintenance recommended.",
     constraints: {
       fitnessValid: true,
       jobCardsClosed: false,
@@ -76,7 +95,8 @@ const mockInductionPlans: InductionPlan[] = [
     time: "07:15",
     recommendation: "Standby",
     fitnessScore: 82,
-    aiReasoning: "Good overall condition but mileage imbalance detected. Recommend standby to allow T-003 higher priority service allocation.",
+    aiReasoning:
+      "Good overall condition but mileage imbalance detected. Recommend standby to allow T-003 higher priority service allocation.",
     constraints: {
       fitnessValid: true,
       jobCardsClosed: true,
@@ -95,7 +115,11 @@ const nightlyOverview = {
   totalTrains: 24,
   scheduledServices: 156,
   predictedDemand: { peak: { time: "08:30", passengers: 12500 } },
-  weatherImpact: { condition: "Light Rain", delayRisk: "Medium", crowdIncrease: "15%" },
+  weatherImpact: {
+    condition: "Light Rain",
+    delayRisk: "Medium",
+    crowdIncrease: "15%",
+  },
   maintenanceWindows: [
     { train: "T-007", window: "23:30-04:00", type: "Preventive" },
     { train: "T-015", window: "01:00-05:30", type: "Corrective" },
@@ -129,25 +153,29 @@ export default function InductionReviewPage() {
   const [reviewNotes, setReviewNotes] = useState("");
 
   const handleApprove = (planId: string) => {
-    setPlans((prev) => prev.map((p) => (p.id === planId ? { ...p, status: "approved" } : p)));
+    setPlans((prev) =>
+      prev.map((p) => (p.id === planId ? { ...p, status: "approved" } : p))
+    );
     setSelectedPlan(null);
   };
 
   const handleReject = (planId: string, reason: string) => {
-    setPlans((prev) => prev.map((p) => (p.id === planId ? { ...p, status: "rejected" } : p)));
+    setPlans((prev) =>
+      prev.map((p) => (p.id === planId ? { ...p, status: "rejected" } : p))
+    );
     setSelectedPlan(null);
   };
 
   const getRecommendationColor = (rec: string) => {
     switch (rec) {
       case "Service":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
       case "Maintenance":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
       case "Standby":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
     }
   };
 
@@ -163,7 +191,8 @@ export default function InductionReviewPage() {
               Induction Review — Nightly Operator Console
             </h1>
             <p className="text-muted-foreground mt-1 max-w-2xl">
-              Review AI-ranked induction plans (21:00–23:00 IST). Approve, reject or simulate what-if scenarios.
+              Review AI-ranked induction plans (21:00–23:00 IST). Approve,
+              reject or simulate what-if scenarios.
             </p>
           </div>
 
@@ -171,12 +200,14 @@ export default function InductionReviewPage() {
             <Badge variant="outline" className="px-3 py-1">
               {plans.filter((p) => p.status === "pending").length} Pending
             </Badge>
-            <div className="text-sm text-muted-foreground">Review Window: 21:00 - 23:00 IST</div>
+            <div className="text-sm text-muted-foreground">
+              Review Window: 21:00 - 23:00 IST
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5 space-y-4">
+          <div className="lg:col-span-6 space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle>Ranked Induction Plans</CardTitle>
@@ -185,88 +216,214 @@ export default function InductionReviewPage() {
                 <div className="flex items-center gap-3">
                   <Button variant="ghost">Refresh Data</Button>
                   <Button variant="outline">Run Simulation</Button>
-                  <div className="ml-auto text-sm text-muted-foreground">Updated: {nightlyOverview.date}</div>
+                  <div className="ml-auto text-sm text-muted-foreground">
+                    Updated: {nightlyOverview.date}
+                  </div>
                 </div>
 
                 <div className="space-y-3">
                   {plans.map((plan, idx) => (
-                    <div key={plan.id} className="flex items-start gap-3 p-3 rounded-lg border border-border">
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
+                    <div
+                      key={plan.id}
+                      className="flex items-start gap-3 p-4 rounded-lg border border-border"
+                    >
+                      <div className="flex-1 pr-4">
+                        <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
-                            <div className="font-semibold">{idx + 1}. {plan.trainNumber}</div>
-                            <Badge className={getRecommendationColor(plan.recommendation)}>{plan.recommendation}</Badge>
+                            <div className="font-semibold">
+                              {idx + 1}. {plan.trainNumber}
+                            </div>
+                            <Badge
+                              className={getRecommendationColor(
+                                plan.recommendation
+                              )}
+                            >
+                              {plan.recommendation}
+                            </Badge>
                           </div>
-                          <div className="text-sm text-muted-foreground">{plan.time} • {plan.date}</div>
+                          <div className="text-sm font-medium text-foreground">
+                            {plan.time} • {plan.date}
+                          </div>
                         </div>
 
-                        <div className="text-sm text-muted-foreground mt-2">Fitness: <span className="font-medium">{plan.fitnessScore}%</span></div>
-                        <div className="text-sm mt-2 text-ellipsis overflow-hidden max-h-12">{plan.aiReasoning}</div>
+                        <div className="text-sm text-muted-foreground mb-2">
+                          Fitness:{" "}
+                          <span className="font-medium">
+                            {plan.fitnessScore}%
+                          </span>
+                        </div>
+                        <div className="text-sm mb-4 line-clamp-2">
+                          {plan.aiReasoning}
+                        </div>
 
-                        <div className="flex items-center gap-2 mt-3">
+                        <div className="flex items-center gap-2">
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button size="sm" variant="ghost" onClick={() => setSelectedPlan(plan)}>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => setSelectedPlan(plan)}
+                              >
                                 Details
                               </Button>
                             </DialogTrigger>
                             <DialogContent>
                               <DialogHeader>
-                                <DialogTitle>Detailed Review - {plan.trainNumber}</DialogTitle>
+                                <DialogTitle>
+                                  Detailed Review - {plan.trainNumber}
+                                </DialogTitle>
                               </DialogHeader>
 
                               <div className="space-y-4">
-                                <div className="text-sm font-medium">AI Reasoning</div>
-                                <div className="text-sm bg-muted p-3 rounded">{plan.aiReasoning}</div>
+                                <div className="text-sm font-medium">
+                                  AI Reasoning
+                                </div>
+                                <div className="text-sm bg-muted p-3 rounded">
+                                  {plan.aiReasoning}
+                                </div>
 
                                 {plan.riskFactors.length > 0 && (
                                   <div>
-                                    <h4 className="font-semibold">Risk Factors</h4>
+                                    <h4 className="font-semibold">
+                                      Risk Factors
+                                    </h4>
                                     <ul className="mt-2 space-y-1">
                                       {plan.riskFactors.map((risk, i) => (
-                                        <li key={i} className="text-sm text-yellow-700">• {risk}</li>
+                                        <li
+                                          key={i}
+                                          className="text-sm text-yellow-700"
+                                        >
+                                          • {risk}
+                                        </li>
                                       ))}
                                     </ul>
                                   </div>
                                 )}
 
                                 <div>
-                                  <h4 className="font-semibold">Constraint Snapshot</h4>
+                                  <h4 className="font-semibold">
+                                    Constraint Snapshot
+                                  </h4>
                                   <div className="grid grid-cols-2 gap-2 mt-2">
-                                    <div className="p-2 rounded bg-muted/50">Fitness: {plan.constraints.fitnessValid ? 'Valid' : 'Expired'}</div>
-                                    <div className="p-2 rounded bg-muted/50">Job Cards: {plan.constraints.jobCardsClosed ? 'Closed' : 'Open'}</div>
-                                    <div className="p-2 rounded bg-muted/50">Branding: {plan.constraints.brandingCompliant ? 'Compliant' : 'At risk'}</div>
-                                    <div className="p-2 rounded bg-muted/50">Mileage: {plan.constraints.mileageBalanced ? 'Balanced' : 'Imbalance'}</div>
-                                    <div className="p-2 rounded bg-muted/50">Cleaning: {plan.constraints.cleaningScheduled ? 'Scheduled' : 'Not scheduled'}</div>
-                                    <div className="p-2 rounded bg-muted/50">Stabling: {plan.constraints.stablingOptimal ? 'Optimal' : 'Suboptimal'}</div>
+                                    <div className="p-2 rounded bg-muted/50">
+                                      Fitness:{" "}
+                                      {plan.constraints.fitnessValid
+                                        ? "Valid"
+                                        : "Expired"}
+                                    </div>
+                                    <div className="p-2 rounded bg-muted/50">
+                                      Job Cards:{" "}
+                                      {plan.constraints.jobCardsClosed
+                                        ? "Closed"
+                                        : "Open"}
+                                    </div>
+                                    <div className="p-2 rounded bg-muted/50">
+                                      Branding:{" "}
+                                      {plan.constraints.brandingCompliant
+                                        ? "Compliant"
+                                        : "At risk"}
+                                    </div>
+                                    <div className="p-2 rounded bg-muted/50">
+                                      Mileage:{" "}
+                                      {plan.constraints.mileageBalanced
+                                        ? "Balanced"
+                                        : "Imbalance"}
+                                    </div>
+                                    <div className="p-2 rounded bg-muted/50">
+                                      Cleaning:{" "}
+                                      {plan.constraints.cleaningScheduled
+                                        ? "Scheduled"
+                                        : "Not scheduled"}
+                                    </div>
+                                    <div className="p-2 rounded bg-muted/50">
+                                      Stabling:{" "}
+                                      {plan.constraints.stablingOptimal
+                                        ? "Optimal"
+                                        : "Suboptimal"}
+                                    </div>
                                   </div>
                                 </div>
 
                                 <div>
-                                  <h4 className="font-semibold">Review Notes</h4>
-                                  <Textarea placeholder="Add your review notes and reasoning..." value={reviewNotes} onChange={(e) => setReviewNotes(e.target.value)} className="min-h-[100px]" />
+                                  <h4 className="font-semibold">
+                                    Review Notes
+                                  </h4>
+                                  <Textarea
+                                    placeholder="Add your review notes and reasoning..."
+                                    value={reviewNotes}
+                                    onChange={(e) =>
+                                      setReviewNotes(e.target.value)
+                                    }
+                                    className="min-h-[100px]"
+                                  />
                                 </div>
 
                                 <div className="flex gap-3 pt-4 border-t">
-                                  <Button onClick={() => handleApprove(plan.id)} className="flex-1">
-                                    <CheckCircle className="h-4 w-4 mr-2" /> Approve Plan
+                                  <Button
+                                    onClick={() => handleApprove(plan.id)}
+                                    className="flex-1"
+                                  >
+                                    <CheckCircle className="h-4 w-4 mr-2" />{" "}
+                                    Approve Plan
                                   </Button>
-                                  <Button variant="destructive" onClick={() => handleReject(plan.id, reviewNotes)} className="flex-1">
-                                    <XCircle className="h-4 w-4 mr-2" /> Reject Plan
+                                  <Button
+                                    variant="destructive"
+                                    onClick={() =>
+                                      handleReject(plan.id, reviewNotes)
+                                    }
+                                    className="flex-1"
+                                  >
+                                    <XCircle className="h-4 w-4 mr-2" /> Reject
+                                    Plan
                                   </Button>
                                 </div>
                               </div>
                             </DialogContent>
                           </Dialog>
 
-                          <Button size="sm" variant="outline" onClick={() => handleReject(plan.id, 'Operator reject')}>Reject</Button>
-                          <Button size="sm" onClick={() => handleApprove(plan.id)}>Approve</Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() =>
+                              handleReject(plan.id, "Operator reject")
+                            }
+                          >
+                            Reject
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => handleApprove(plan.id)}
+                          >
+                            Approve
+                          </Button>
                         </div>
                       </div>
 
                       <div className="w-24 text-right">
-                        <div className="text-xs text-muted-foreground">Status</div>
-                        <div className="font-semibold mt-1">{plan.status}</div>
+                        <div className="text-xs text-muted-foreground">
+                          Status
+                        </div>
+                        <Badge
+                          variant={
+                            plan.status === "approved"
+                              ? "default"
+                              : plan.status === "rejected"
+                              ? "destructive"
+                              : "secondary"
+                          }
+                          className={`mt-1 ${
+                            plan.status === "pending"
+                              ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
+                              : ""
+                          } ${
+                            plan.status === "approved"
+                              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                              : ""
+                          }`}
+                        >
+                          {plan.status.charAt(0).toUpperCase() +
+                            plan.status.slice(1)}
+                        </Badge>
                       </div>
                     </div>
                   ))}
@@ -281,41 +438,91 @@ export default function InductionReviewPage() {
               <CardContent>
                 {selectedPlan ? (
                   <div className="space-y-2">
-                    <div className="text-sm">Train: <span className="font-medium">{selectedPlan.trainNumber}</span></div>
+                    <div className="text-sm">
+                      Train:{" "}
+                      <span className="font-medium">
+                        {selectedPlan.trainNumber}
+                      </span>
+                    </div>
                     <div className="grid grid-cols-2 gap-2 mt-2">
-                      <div className="p-2 rounded bg-muted/50">Fitness Certs: {selectedPlan.constraints.fitnessValid ? 'Valid' : 'Expired'}</div>
-                      <div className="p-2 rounded bg-muted/50">Job Cards: {selectedPlan.constraints.jobCardsClosed ? 'Closed' : 'Open'}</div>
-                      <div className="p-2 rounded bg-muted/50">Branding: {selectedPlan.constraints.brandingCompliant ? 'Compliant' : 'At risk'}</div>
-                      <div className="p-2 rounded bg-muted/50">Mileage: {selectedPlan.constraints.mileageBalanced ? 'Balanced' : 'Imbalance'}</div>
-                      <div className="p-2 rounded bg-muted/50">Cleaning: {selectedPlan.constraints.cleaningScheduled ? 'Scheduled' : 'Not scheduled'}</div>
-                      <div className="p-2 rounded bg-muted/50">Stabling: {selectedPlan.constraints.stablingOptimal ? 'Optimal' : 'Suboptimal'}</div>
+                      <div className="p-2 rounded bg-muted/50">
+                        Fitness Certs:{" "}
+                        {selectedPlan.constraints.fitnessValid
+                          ? "Valid"
+                          : "Expired"}
+                      </div>
+                      <div className="p-2 rounded bg-muted/50">
+                        Job Cards:{" "}
+                        {selectedPlan.constraints.jobCardsClosed
+                          ? "Closed"
+                          : "Open"}
+                      </div>
+                      <div className="p-2 rounded bg-muted/50">
+                        Branding:{" "}
+                        {selectedPlan.constraints.brandingCompliant
+                          ? "Compliant"
+                          : "At risk"}
+                      </div>
+                      <div className="p-2 rounded bg-muted/50">
+                        Mileage:{" "}
+                        {selectedPlan.constraints.mileageBalanced
+                          ? "Balanced"
+                          : "Imbalance"}
+                      </div>
+                      <div className="p-2 rounded bg-muted/50">
+                        Cleaning:{" "}
+                        {selectedPlan.constraints.cleaningScheduled
+                          ? "Scheduled"
+                          : "Not scheduled"}
+                      </div>
+                      <div className="p-2 rounded bg-muted/50">
+                        Stabling:{" "}
+                        {selectedPlan.constraints.stablingOptimal
+                          ? "Optimal"
+                          : "Suboptimal"}
+                      </div>
                     </div>
                     <div className="text-sm mt-3">AI Notes:</div>
-                    <div className="text-sm bg-muted p-3 rounded">{selectedPlan.aiReasoning}</div>
+                    <div className="text-sm bg-muted p-3 rounded">
+                      {selectedPlan.aiReasoning}
+                    </div>
                   </div>
                 ) : (
-                  <div className="text-sm text-muted-foreground">Select a plan to view constraint matrix and detailed compliance.</div>
+                  <div className="text-sm text-muted-foreground">
+                    Select a plan to view constraint matrix and detailed
+                    compliance.
+                  </div>
                 )}
               </CardContent>
             </Card>
           </div>
 
-          <div className="lg:col-span-7 space-y-4">
+          <div className="lg:col-span-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
                 <CardHeader>
                   <CardTitle>Demand Prediction</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div style={{ width: '100%', height: 240 }}>
+                  <div style={{ width: "100%", height: 240 }}>
                     <ResponsiveContainer width="100%" height={240}>
                       <LineChart data={demandPredictionData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="time" />
-                        <YAxis />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#9ca3af" />
+                        <XAxis dataKey="time" tick={{ fill: "#374151" }} />
+                        <YAxis tick={{ fill: "#374151" }} />
                         <Tooltip />
-                        <Line type="monotone" dataKey="predicted" stroke="hsl(var(--primary))" strokeWidth={2} />
-                        <Line type="monotone" dataKey="actual" stroke="hsl(var(--success))" strokeWidth={2} />
+                        <Line
+                          type="monotone"
+                          dataKey="predicted"
+                          stroke="#2563eb"
+                          strokeWidth={2}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="actual"
+                          stroke="hsl(var(--success))"
+                          strokeWidth={2}
+                        />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -330,7 +537,13 @@ export default function InductionReviewPage() {
                   <div className="h-48">
                     <ResponsiveContainer width="100%" height={180}>
                       <PieChart>
-                        <Pie data={riskAssessmentData} dataKey="risk" cx="50%" cy="50%" outerRadius={60}>
+                        <Pie
+                          data={riskAssessmentData}
+                          dataKey="risk"
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={60}
+                        >
                           {riskAssessmentData.map((entry, i) => (
                             <Cell key={i} fill={entry.color} />
                           ))}
@@ -341,9 +554,16 @@ export default function InductionReviewPage() {
 
                     <div className="mt-3 text-sm">
                       {nightlyOverview.maintenanceWindows.map((w, i) => (
-                        <div key={i} className="flex items-center justify-between">
-                          <div>{w.train} • {w.type}</div>
-                          <div className="text-muted-foreground">{w.window}</div>
+                        <div
+                          key={i}
+                          className="flex items-center justify-between"
+                        >
+                          <div>
+                            {w.train} • {w.type}
+                          </div>
+                          <div className="text-muted-foreground">
+                            {w.window}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -359,12 +579,18 @@ export default function InductionReviewPage() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div className="p-3 rounded bg-muted/50">
-                    <div className="text-sm text-muted-foreground">Toggle constraint</div>
+                    <div className="text-sm text-muted-foreground">
+                      Toggle constraint
+                    </div>
                     <div className="font-medium mt-1">Ignore Branding</div>
                   </div>
                   <div className="p-3 rounded bg-muted/50">
-                    <div className="text-sm text-muted-foreground">Adjust objective</div>
-                    <div className="font-medium mt-1">Prioritise Service Readiness</div>
+                    <div className="text-sm text-muted-foreground">
+                      Adjust objective
+                    </div>
+                    <div className="font-medium mt-1">
+                      Prioritise Service Readiness
+                    </div>
                   </div>
                   <div className="p-3 rounded bg-muted/50">
                     <div className="text-sm text-muted-foreground">Run</div>

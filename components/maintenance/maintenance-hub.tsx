@@ -1,11 +1,38 @@
-"use client"
-import { TrainHealthMatrix } from "./train-health-matrix"
-import { SurvivalCurveChart } from "./survival-curve-chart"
-import { MaintenanceCalendar } from "./maintenance-calendar"
-import { MaintenanceScheduleManager } from "./maintenance-schedule-manager"
-import { Wrench } from "lucide-react"
+"use client";
+import { useState } from "react";
+import { TrainHealthMatrix } from "./train-health-matrix";
+import { SurvivalCurveChart } from "./survival-curve-chart";
+import { MaintenanceCalendar } from "./maintenance-calendar";
+import { MaintenanceScheduleManager } from "./maintenance-schedule-manager";
+import { Wrench } from "lucide-react";
+
+interface MaintenanceSchedule {
+  id: string;
+  trainNumber: string;
+  type: "Preventive" | "Corrective" | "Inspection";
+  component: string;
+  scheduledDate: string;
+  scheduledTime: string;
+  duration: number;
+  priority: "High" | "Medium" | "Low";
+  status: "scheduled" | "pending_review" | "approved" | "rejected";
+  isAIGenerated: boolean;
+  aiReasoning?: string;
+  assignedTechnician?: string;
+  estimatedCost?: number;
+}
 
 export default function MaintenanceHub() {
+  const [allSchedules, setAllSchedules] = useState<MaintenanceSchedule[]>([]);
+
+  const handleScheduleAdded = (schedule: MaintenanceSchedule) => {
+    setAllSchedules((prev) => [...prev, schedule]);
+  };
+
+  const handleScheduleUpdated = (schedules: MaintenanceSchedule[]) => {
+    setAllSchedules(schedules);
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -17,14 +44,20 @@ export default function MaintenanceHub() {
             </div>
             Predictive Maintenance Hub
           </h1>
-          <p className="text-muted-foreground mt-1">Advanced analytics for component health and maintenance planning</p>
+          <p className="text-muted-foreground mt-1">
+            Advanced analytics for component health and maintenance planning
+          </p>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-success/10">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            <span className="text-sm font-medium text-success">All Systems Monitored</span>
+            <span className="text-sm font-medium text-success">
+              All Systems Monitored
+            </span>
           </div>
-          <div className="text-sm text-muted-foreground">Last analysis: {new Date().toLocaleTimeString()}</div>
+          <div className="text-sm text-muted-foreground">
+            Last analysis: {new Date().toLocaleTimeString()}
+          </div>
         </div>
       </div>
 
@@ -32,10 +65,13 @@ export default function MaintenanceHub() {
 
       <SurvivalCurveChart />
 
-      <MaintenanceScheduleManager />
+      <MaintenanceScheduleManager
+        onScheduleAdded={handleScheduleAdded}
+        onSchedulesUpdated={handleScheduleUpdated}
+      />
 
       {/* Maintenance Calendar */}
-      <MaintenanceCalendar />
+      <MaintenanceCalendar manualSchedules={allSchedules} />
     </div>
-  )
+  );
 }
